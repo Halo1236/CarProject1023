@@ -1,1 +1,1 @@
-include ':BTCarkit', ':AutoBluetooth'
+include ':BTCarkit'
