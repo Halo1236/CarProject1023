@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/bt_page_dialpad_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="28sp" />
+
+    <!-- input box-->
+    <LinearLayout
+        android:id="@+id/ll_input_box_layout"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_input_number"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/bt_dialpad_input_phone_number_def_text"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btn_del"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_del_text"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+    <!--1,4,7,*-->
+    <LinearLayout
+        android:id="@+id/ll_dialpad_row_1"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/ll_input_box_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/selector_btn_bg"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_num_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_1_text" />
+
+        <Button
+            android:id="@+id/btn_num_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_4_text" />
+
+        <Button
+            android:id="@+id/btn_num_7"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_7_text" />
+
+        <Button
+            android:id="@+id/btn_key_asterisk"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_key_asterisk_text" />
+    </LinearLayout>
+
+    <!-- 2,5,8,0 -->
+    <LinearLayout
+        android:id="@+id/ll_dialpad_row_2"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/ll_dialpad_row_1"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_num_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_2_text" />
+
+        <Button
+            android:id="@+id/btn_num_5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_5_text" />
+
+        <Button
+            android:id="@+id/btn_num_8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_8_text" />
+
+        <Button
+            android:id="@+id/btn_key_0_add_sign"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_key_0_text" />
+    </LinearLayout>
+    <!-- 3,6,9,# -->
+    <LinearLayout
+        android:id="@+id/ll_dialpad_row_3"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/ll_dialpad_row_2"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_num_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_3_text" />
+
+        <Button
+            android:id="@+id/btn_num_6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_6_text" />
+
+        <Button
+            android:id="@+id/btn_num_9"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_num_9_text" />
+        <!--#-->
+        <Button
+            android:id="@+id/btn_key_pound_sign"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/bt_dialpad_key_pound_sign_text" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_req_dial"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/ll_dialpad_row_3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/selector_btn_bg"
+        android:text="@string/bt_dialpad_dial_text" />
+    <Button
+        android:id="@+id/btn_req_hung_up"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/btn_req_dial"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/selector_btn_bg"
+        android:text="@string/bt_dialpad_hung_up_text" />
+
+
+    <!--HFP STATE SHOW-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_hfp_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_dialpad_hfp_state_text"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_phoneName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_dialpad_call_phone_name_text"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_phoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_dialpad_call_phone_number_text"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+
+</RelativeLayout>

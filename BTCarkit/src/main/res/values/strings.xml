@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">BTCarkit</string>
+    <string name="btn_click_text">点我有惊喜，哈哈！！！</string>
+    <string name="send_cmd_text">发送AT指令</string>
+    <string name="cmd_read_text">读AT指令</string>
+    <string name="cmd_parse_text">解析AT指令</string>
+
+    <string name="bt_a2dp_state_text">A2DP状态：</string>
+    <string name="bt_avrcp_state_text">AVRCP媒体状态：</string>
+
+    <string name="bt_page_device_list_text">设备列表</string>
+    <string name="bt_page_dialpad_text">拨号界面</string>
+    <string name="bt_page_contacts_text">联系人</string>
+    <string name="bt_page_callrecord_text">通话记录</string>
+    <string name="bt_page_musicplayer_text">蓝牙音乐</string>
+    <string name="bt_page_setting_text">设置界面</string>
+
+
+    <string name="bt_music_title_def_text">未知歌曲</string>
+    <string name="bt_music_artist_def_text">未知歌手</string>
+    <string name="bt_music_album_def_text">未知专辑</string>
+
+    <string name="bt_music_prev_program_text">上一曲</string>
+    <string name="bt_music_next_program_text">下一曲</string>
+    <string name="bt_music_pause_program_text">暂停</string>
+    <string name="bt_music_play_program_text">播放</string>
+
+    <!--Dialpad-->
+    <string name="bt_dialpad_input_phone_number_def_text">请输入电话号码</string>
+    <string name="bt_dialpad_del_text">删除</string>
+    <string name="bt_dialpad_dial_text">拨号</string>
+    <string name="bt_dialpad_hung_up_text">挂断</string>
+    <string name="bt_dialpad_num_1_text">1</string>
+    <string name="bt_dialpad_num_2_text">2</string>
+    <string name="bt_dialpad_num_3_text">3</string>
+    <string name="bt_dialpad_num_4_text">4</string>
+    <string name="bt_dialpad_num_5_text">5</string>
+    <string name="bt_dialpad_num_6_text">6</string>
+    <string name="bt_dialpad_num_7_text">7</string>
+    <string name="bt_dialpad_num_8_text">8</string>
+    <string name="bt_dialpad_num_9_text">9</string>
+    <string name="bt_dialpad_key_asterisk_text">"*"</string>
+    <string name="bt_dialpad_key_0_text">"0+"</string>
+    <string name="bt_dialpad_key_pound_sign_text">"#"</string>
+    <string name="bt_dialpad_hfp_state_text">"HFP状态:"</string>
+    <string name="bt_dialpad_call_phone_name_text">"电话名字:"</string>
+    <string name="bt_dialpad_call_phone_number_text">"电话号码:"</string>
+
+    <string name="bt_device_name_def_text">BT Device Unkonow</string>
+    <string name="bt_device_address_def_text">Address Unkown</string>
+    <string name="bt_device_rssi_def_text">BT Device Rssi Unkown</string>
+    <string name="bt_device_refresh_scan_text">开始扫描设备</string>
+    <string name="bt_device_disconnect_text">断开当前连接设备</string>
+    <string name="bt_device_scan_state_text">"扫描设备状态："</string>
+    <string name="bt_device_hfp_state_text">"HFP状态："</string>
+    <string name="bt_device_a2dp_state_text">"A2DP状态："</string>
+
+</resources>

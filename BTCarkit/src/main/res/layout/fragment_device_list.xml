@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/bt_page_device_list_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="28sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@android:color/holo_green_dark"
+            android:paddingTop="60dp">
+            <Button
+                android:id="@+id/btn_start_scann_new_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_bg"
+                android:layout_marginBottom="5dp"
+                android:text="@string/bt_device_refresh_scan_text"/>
+            <Button
+                android:id="@+id/btn_disconnect_current_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_bg"
+                android:text="@string/bt_device_disconnect_text"/>
+
+
+            <TextView
+                android:id="@+id/tv_device_scan_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="@string/bt_device_scan_state_text"
+                android:textColor="@android:color/holo_blue_light"/>
+
+            <TextView
+                android:id="@+id/tv_device_hfp_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="@string/bt_device_hfp_state_text"
+                android:textColor="@android:color/holo_blue_light"/>
+
+            <TextView
+                android:id="@+id/tv_device_a2dp_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="@string/bt_device_a2dp_state_text"
+                android:textColor="@android:color/holo_blue_light"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

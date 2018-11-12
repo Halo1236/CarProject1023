@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ccc">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:text="@string/bt_music_title_def_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/tv_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_centerHorizontal="true"
+        android:text="@string/bt_music_artist_def_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/tv_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_artist"
+        android:layout_centerHorizontal="true"
+        android:text="@string/bt_music_album_def_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="22sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_album"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_prev"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:background="@android:color/holo_blue_dark"
+            android:text="@string/bt_music_prev_program_text"
+            android:textSize="26sp" />
+
+        <Button
+            android:id="@+id/btn_switch"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@android:color/holo_blue_dark"
+            android:text="@string/bt_music_pause_program_text"
+            android:textSize="26sp" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:background="@android:color/holo_blue_dark"
+            android:text="@string/bt_music_next_program_text"
+            android:textSize="26sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_ad2dp_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_a2dp_state_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/tv_avrcp_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_avrcp_state_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:layout_below="@+id/tv_ad2dp_state"/>
+
+
+</RelativeLayout>
