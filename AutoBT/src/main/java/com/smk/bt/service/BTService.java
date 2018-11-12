@@ -6,6 +6,7 @@ import android.os.IBinder;
 
 import com.smk.bt.utils.Logger;
 
+
 public class BTService extends Service {
     private static final String TAG = Logger.makeLogTag(BTService.class);
 
