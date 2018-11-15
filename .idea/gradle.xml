@@ -9,6 +9,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AutoBT" />
+            <option value="$PROJECT_DIR$/SimpleMvp" />
+            <option value="$PROJECT_DIR$/simplemvplibrary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

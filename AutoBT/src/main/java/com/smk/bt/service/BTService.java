@@ -9,11 +9,13 @@ import com.smk.bt.utils.Logger;
 
 public class BTService extends Service {
     private static final String TAG = Logger.makeLogTag(BTService.class);
+    private BTServiceImpl mBTServiceImpl;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.i(TAG,"onCreate() ...");
+        mBTServiceImpl = new BTServiceImpl(this);
     }
 
     @Override
@@ -25,7 +27,7 @@ public class BTService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Logger.i(TAG,"onBind() ...");
-        return null;
+        return mBTServiceImpl;
     }
 
     @Override
@@ -36,6 +38,7 @@ public class BTService extends Service {
 
     @Override
     public void onDestroy() {
+        mBTServiceImpl.onDestroy();
         super.onDestroy();
         Logger.i(TAG,"onDestroy() ...");
     }
