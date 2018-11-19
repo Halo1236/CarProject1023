@@ -1,1 +1,2 @@
-include ':AutoBT', ':SimpleMvp', ':simplemvplibrary'
+// include ':AutoBT', ':SimpleMvp', ':simplemvplibrary'
+include ':AutoBT'

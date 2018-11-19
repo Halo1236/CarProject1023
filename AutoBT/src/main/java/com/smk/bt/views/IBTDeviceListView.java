@@ -1,4 +1,4 @@
 package com.smk.bt.views;
 
-public class IBTDeviceListView {
+public interface IBTDeviceListView {
 }
