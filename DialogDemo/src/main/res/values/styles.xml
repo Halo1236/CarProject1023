@@ -23,9 +23,7 @@
         <item name="android:windowBackground">@null</item>
     </style>
 
-    <style name="SmartDialog.DialogTheme" parent="MessageDialog.DialogTheme"/>
-
-    <style name="OneTitleDialog.Theme" parent="@android:style/Theme.Dialog">
+    <style name="BaseDialogTheme" parent="@android:style/Theme.Dialog">
         <!--是否去除边框-->
         <item name="android:windowFrame">@null</item>
         <!--是否浮现在activity之上-->
@@ -39,5 +37,8 @@
         <!--背景颜色及和透明程度-->
         <item name="android:windowBackground">@null</item>
     </style>
+
+    <style name="SmartDialog.Theme" parent="BaseDialogTheme"></style>
+    <style name="OneTitleDialog.Theme" parent="BaseDialogTheme"></style>
 
 </resources>

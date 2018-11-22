@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "test";
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_click_me).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showOneTitleDialog();
+                showSmartDialog1();
             }
         });
     }
@@ -153,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
      */
 
 
-
     private MultiTitleDialog multiTitleDialog;
 
     private void showOneTitleDialog() {
@@ -183,4 +183,48 @@ public class MainActivity extends AppCompatActivity {
             multiTitleDialog.show();
         }
     }
+
+    private SmartDialog smartDialog;
+
+    private void showSmartDialog1() {
+        if (null == smartDialog) {
+            smartDialog = new SmartDialog(this);
+            smartDialog
+                    .setRootLayoutBackground(R.drawable.dialog_global_bg)
+                    .setRootLayoutSize(500, 260)
+                    .setButtonBackground(SmartDialog.BUTTON_FIRST,R.drawable.dialog_btn_positive_normal)
+                    .setButtonBackground(SmartDialog.BUTTON_SECOND,R.drawable.dialog_btn_negative_normal)
+                    .setFirstTitleMargin(SmartDialog.MARGIN_TOP, 45)
+                    .setSecondTitleMargin(SmartDialog.MARGIN_TOP, 25)
+                    .setButtonLayoutMargin(SmartDialog.MARGIN_BOTTOM, 25)
+                    .setButtonLayoutAlign(SmartDialog.ALIGN_BOTTOM,26)
+                    .setFirstButtonMargin(SmartDialog.MARGIN_LEFT, 62)
+                    .setSecondButtonMargin(SmartDialog.MARGIN_RIGHT, 62)
+                    .setTitleTextSize(SmartDialog.TITLE_FIRST, 28)
+                    .setTitleTextSize(SmartDialog.TITLE_SECOND, 22)
+                    .setButtonTextSize(SmartDialog.BUTTON_FIRST, 26)
+                    .setButtonTextSize(SmartDialog.BUTTON_SECOND, 26)
+                    .setTitleText(SmartDialog.TITLE_FIRST, "确定删除?")
+                    .setTitleText(SmartDialog.TITLE_SECOND, "删除后，该设备所有信息将一并删除。")
+                    .setButtonText(SmartDialog.BUTTON_FIRST, "是")
+                    .setButtonText(SmartDialog.BUTTON_SECOND, "否")
+                    .setButtonCallback(SmartDialog.BUTTON_FIRST, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(MainActivity.this,"是",Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setButtonCallback(SmartDialog.BUTTON_SECOND, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(MainActivity.this,"否",Toast.LENGTH_SHORT).show();
+                        }
+                    }).setTitleVisibility(SmartDialog.TITLE_SECOND,View.GONE);
+        }
+        if (!smartDialog.isShowing()) {
+            smartDialog.show();
+        }
+    }
+
+
 }
