@@ -5,18 +5,18 @@ import java.lang.ref.WeakReference;
 public class BasePresenter<V> {
     protected WeakReference<V> mViewRfr;
 
-    public void onAttatch(V view) {
+    public void onAttatchView(V view) {
         this.mViewRfr = new WeakReference<V>(view);
     }
 
-    public void onDetach() {
+    public void onDetachView() {
         if (null != mViewRfr) {
             this.mViewRfr.clear();
             this.mViewRfr = null;
         }
     }
 
-    public boolean isBindView() {
+    protected boolean isBindView() {
         return (null != mViewRfr && null != mViewRfr.get());
     }
 }

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">AutoBT</string>
+    <string name="bt_tab_device_list_page_text">设备列表界面</string>
+    <string name="bt_tab_dial_pad_page_text">拨号界面</string>
+    <string name="bt_tab_contracts_list_page_text">联系人列表界面</string>
+    <string name="bt_tab_call_log_list_page_text">通话记录列表界面</string>
+    <string name="bt_tab_musicplayer_page_text">音乐播放界面</string>
+    <string name="bt_tab_setting_page_text">设置界面</string>
+
+    <string name="bt_tab_device_list_swtich_title_text">蓝牙</string>
+    <string name="bt_tab_device_list_swtich_on_text">开</string>
+    <string name="bt_tab_device_list_swtich_off_text">关</string>
+    <string name="bt_tab_device_list_rediscovery_text">刷新</string>
 </resources>

@@ -3,6 +3,7 @@ package com.smk.bt.service;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.ParcelUuid;
@@ -79,6 +80,16 @@ public class BTServiceImpl extends UiCommand.Stub {
         mDoCallbackHfp = new DoCallbackHfp();
         mDoCallbackPbap = new DoCallbackPbap();
         mDoCallbackBluetooth = new DoCallbackBluetooth();
+        Log.v(TAG, "bindA2dpService");
+        ctx.bindService(new Intent(NfDef.CLASS_SERVICE_A2DP), this.mConnection, Context.BIND_AUTO_CREATE);
+        Log.v(TAG, "bindAvrcpService");
+        ctx.bindService(new Intent(NfDef.CLASS_SERVICE_AVRCP), this.mConnection, Context.BIND_AUTO_CREATE);
+        Log.v(TAG, "bindHfpService");
+        ctx.bindService(new Intent(NfDef.CLASS_SERVICE_HFP), this.mConnection, Context.BIND_AUTO_CREATE);
+        Log.v(TAG, "bindPbapService");
+        ctx.bindService(new Intent(NfDef.CLASS_SERVICE_PBAP), this.mConnection, Context.BIND_AUTO_CREATE);
+        Log.v(TAG, "bindBluetoothService");
+        ctx.bindService(new Intent(NfDef.CLASS_SERVICE_BLUETOOTH), this.mConnection, Context.BIND_AUTO_CREATE);
     }
 
     // utils
@@ -220,8 +231,9 @@ public class BTServiceImpl extends UiCommand.Stub {
 
         @Override
         public void onHfpStateChanged(String address, int prevState, int newState) throws RemoteException {
-            Logger.v(TAG, "onHfpStateChanged() address : " + address + " , prevState : " + " , newState : " + newState);
+            Logger.v(TAG, "onHfpStateChanged() address : " + address + " , prevState : " + prevState + " , newState : " + newState);
             mDoCallbackHfp.onHfpStateChanged(address, prevState, newState);
+            mDoCallbackBluetooth.onHfpStateChanged(address, prevState, newState);
         }
 
         @Override
@@ -292,6 +304,7 @@ public class BTServiceImpl extends UiCommand.Stub {
         public void onA2dpStateChanged(String address, int prevState, int newState) throws RemoteException {
             Logger.v(TAG, "onA2dpStateChanged() address : " + address + " , prevState : " + prevState + " , newState : " + newState);
             mDoCallbackA2dp.onA2dpStateChanged(address, prevState, newState);
+            mDoCallbackBluetooth.onA2dpStateChanged(address, prevState, newState);
         }
     };
 

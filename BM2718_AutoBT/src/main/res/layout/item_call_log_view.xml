@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="82dp">
+
+    <ImageView
+        android:id="@+id/ivCallIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="100dp"
+        android:background="@drawable/icon_call_type_callin"/>
+
+    <TextView
+        android:id="@+id/tvCallLogName"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="170dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:id="@+id/tvCallLogNumber"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="460dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:id="@+id/tvCallTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="100dp"
+        android:textSize="30sp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="100dp"
+        android:background="@drawable/icon_call_item_line"/>
+</RelativeLayout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="bt_app_name">蓝牙</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="cx62_bt_please_message">请搜索并配对连接，或用手机搜索本系统：</string>
+    <string name="cx62_bt_unpaired">未配对</string>
+    <string name="cx62_bt_dialog_connecting">设备连接中…</string>
+    <string name="cx62_bt_dialog_cancel">取消</string>
+    <string name="cx62_bt_dialog_connect_fail">连接失败！</string>
+    <string name="cx62_bt_dialog_connect_success">连接成功！</string>
+    <string name="cx62_bt_dialog_del_title">确定删除？</string>
+    <string name="cx62_bt_dialog_del_message">删除后，该设备所有信息将一并删除。</string>
+    <string name="cx62_bt_dialog_yes">是</string>
+    <string name="cx62_bt_dialog_no">否</string>
+    <string name="cx62_bt_refresh">刷新</string>
+    <string name="cx62_bt_refresh_please_refresh">请点击“刷新”重新查找</string>
+    <string name="cx62_bt_dialog_bt_close_tip">蓝牙功能已关闭，是否开启？</string>
+    <string name="cx62_bt_function">蓝牙功能</string>
+    <string name="cx62_bt_settings_auto_connect">自动连接</string>
+    <string name="cx62_bt_settings_auto_answer">自动接听</string>
+    <string name="cx62_bt_settings_auto_read">来电播报</string>
+    <string name="cx62_bt_settings_pin_code">配对码</string>
+    <string name="cx62_bt_settings_pin">配对</string>
+    <string name="cx62_bt_settings_device_name">设备名称</string>
+    <string name="cx62_bt_settings_auto_sync_ab">自动同步通讯录</string>
+    <string name="cx62_bt_settings_sync_ab">同步通讯录</string>
+    <string name="cx62_bt_settings_sync">同步</string>
+    <string name="cx62_bt_dialog_bt_opening">正在开启蓝牙…</string>
+    <string name="cx62_bt_dialog_bt_open_success">已开启蓝牙！</string>
+    <string name="cx62_bt_dialog_bt_open_fail">蓝牙开启失败，请重试!</string>
+    <string name="cx62_bt_search">搜索</string>
+    <string name="cx62_bt_dialog_if_sync_contacts">是否同步通讯录？</string>
+    <string name="cx62_bt_dialog_sync_contacts">正在同步通讯录…</string>
+    <string name="cx62_bt_no_contacts">无联系人！</string>
+    <string name="cx62_bt_dialog_sync_fail">同步失败!</string>
+    <string name="cx62_bt_dialog_sync_no_count"> 同步失败，请检查手机是否授权同步联系人 </string>
+    <string name="cx62_bt_dialog_sync_record_no_count"> 同步失败，请检查手机是否授权同步通话记录</string>
+    <string name="cx62_bt_dialog_sync_ok">同步成功！</string>
+    <string name="cx62_bt_dialog_if_sync_calllogs">是否同步通话记录？</string>
+    <string name="cx62_bt_no_call_log">无通话记录！</string>
+    <string name="cx62_bt_dialog_sync_calllogs">正在同步通话记录…</string>
+    <string name="cx62_bt_dialog_check_contacts">检查手机是否授权同步通讯录…</string>
+    <string name="cx62_bt_calling_state_dialing">拨号中…</string>
+    <string name="cx62_bt_calling_state_incoming">来电…</string>
+    <string name="cx62_bt_calling_state_active">通话中…</string>
+    <string name="cx62_bt_calling_state_over">通话结束</string>
+    <string name="cx62_bt_please_manual_sync">请按“设置”，手动同步。</string>
+    <string name="cx62_bt_syncing_contacts">正在同步联系人</string>
+    <string name="cx62_bt_syncing_call_logs">正在同步通话记录</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="cx62_bt_open_or_again">请确认手机蓝牙是否打开，或稍后重试。</string>
+    <string name="cx62_bt_settings_bt_connect">蓝牙连接</string>
+    <string name="cx62_bt_refresh_no_device">未找到设备！</string>
+    <string name="cx62_bt_dialog_delete_addressbook">正在同步通讯录…</string>
+    <string name="cx62_bt_dialog_delete_ok">删除完成！</string>
+    <string name="cx62_bt_dialog_loading">加载数据中…</string>
+    <string name="cx62_bt_dialog_disconnect_bt">断开当前蓝牙连接？</string>
+    <string name="cx62_bt_calling_state_retain">保留</string>
+    <string name="cx62_bt_calling_name_or">或</string>
+    <string name="cx62_bt_search_start">开始搜索</string>
+    <string name="cx62_bt_search_finish">搜索完成</string>
+    <string name="cx62_bt_unknown_title">未知歌曲</string>
+    <string name="cx62_bt_unknown_artist">未知艺人</string>
+    <string name="cx62_bt_unknown_album">未知专辑</string>
+    <string name="cx62_bt_no_music_data">未收到蓝牙音乐数据</string>
+    <string name="cx62_bt_unknown">未知</string>
+    <string name="cx62_bt_incoming_call">来电</string>
+    <string name="cx62_bt_musicjump_dialog">无蓝牙设备，请前往电话功能连接蓝牙设备。</string>
+    <string name="cx62_bt_phone_number_invalid">无效电话号码!</string>
+
+    <string name="bt_devices_name">蓝牙设备名称</string>
+    <string name="bt_devices_module_version">蓝牙模块版本</string>
+    <string name="bt_break">断开</string>
+
+    <string name="bt_number_fragment">蓝牙拨号</string>
+    <string name="bt_contact_fragment">蓝牙通讯录</string>
+    <string name="bt_calllog_fragment">蓝牙通话记录</string>
+    <string name="bt_music_fragment">蓝牙音乐</string>
+    <string name="bt_setting_fragment">蓝牙设置</string>
+    <string name="bt_connect_fragment">蓝牙连接</string>
+</resources>

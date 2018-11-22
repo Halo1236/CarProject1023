@@ -2,6 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.smk.bt">
 
+    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+
+    <!-- 允许读写setting里面的键值对 -->
+    <uses-permission android:name="android.permission.READ_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <!-- SDCard中创建与删除文件权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <!-- 向SDCard写入数据权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
     <application
         android:name=".application.BTApplication"
         android:allowBackup="true"
@@ -10,19 +34,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".views.activity.BTMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.BTService">
+
+        <receiver android:name="com.smk.bt.broadcast.BTReceiver">
+            <intent-filter>
+                <action android:name="com.semisky.preStartHome"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.bluetooth.device.action.PAIRING_REQUEST"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="com.smk.bt.service.BTService">
             <intent-filter>
                 <action android:name="com.smk.service.ACTION_BT_START"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>

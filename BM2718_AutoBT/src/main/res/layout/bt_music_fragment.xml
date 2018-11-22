@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main">
+
+    <ImageView
+        android:id="@+id/ivMusicDisc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="186dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/icon_music_main_disc"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="82dp"
+        android:layout_toEndOf="@+id/ivMusicDisc"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_music_main_name"/>
+
+            <com.semisky.bluetoothproject.view.MarqueeText
+                android:id="@+id/tvSongName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:textSize="40sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="54dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_music_main_album"/>
+
+            <TextView
+                android:id="@+id/tvSongAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="28sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="31dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_music_main_artist"/>
+
+            <TextView
+                android:id="@+id/tvSongArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="28sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="22dp"
+        android:layout_marginStart="160dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ibMusicLast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_music_last_selector"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="232dp">
+
+            <ImageButton
+                android:id="@+id/ibMusicPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_music_play_selector"/>
+
+            <ImageButton
+                android:id="@+id/ibMusicPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_music_pause_selector"
+                android:visibility="invisible"/>
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/ibMusicNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="232dp"
+            android:background="@drawable/btn_music_next_selector"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

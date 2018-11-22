@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main">
+
+    <ListView
+        android:id="@+id/lvContactList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/rlNoCallRecords"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvNoCallRecords"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="149dp"
+            android:text="@string/cx62_bt_no_contacts"
+            android:textSize="38sp"/>
+
+        <TextView
+            android:id="@+id/tvSyncFail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvNoCallRecords"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="@string/cx62_bt_dialog_sync_fail"
+            android:visibility="gone"
+            android:textSize="38sp"/>
+
+        <TextView
+            android:id="@+id/tvSyncManual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvSyncFail"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="38dp"
+            android:text="@string/cx62_bt_please_manual_sync"
+            android:textSize="28sp"/>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

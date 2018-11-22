@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DialogDemo</string>
+    <string name="click_me_text">点我</string>
+</resources>

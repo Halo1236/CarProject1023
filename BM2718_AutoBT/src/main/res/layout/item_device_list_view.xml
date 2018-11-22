@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_background"
+    android:layout_width="match_parent"
+    android:layout_height="82dp"
+    android:orientation="horizontal">
+
+    <com.semisky.bluetoothproject.view.MarqueeText
+        android:id="@+id/tv_device_name"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="100dp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textSize="30sp"/>
+
+    <ImageView
+        android:id="@+id/iv_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="667dp"
+        android:background="@drawable/icon_devices_connect_selector"
+        android:textSize="34sp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="100dp"
+        android:background="@drawable/icon_devices_delete_selector"
+        android:focusable="false"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/icon_call_item_line"/>
+
+</RelativeLayout>

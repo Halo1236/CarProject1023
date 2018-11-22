@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/ll_dialog_Layout"
+              android:layout_width="500dp"
+              android:layout_height="260dp"
+              android:layout_gravity="center"
+              android:background="@drawable/dialog_background"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_dialog_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="83dp"
+        android:gravity="center"
+        android:text="@string/cx62_bt_dialog_sync_ok"
+        android:textColor="@color/colorWhite"
+        android:textSize="36sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_button_background"
+            android:text="@string/cx62_bt_dialog_cancel"
+            android:textColor="@color/colorWhite"
+            android:textSize="26sp"/>
+
+    </RelativeLayout>
+</LinearLayout>

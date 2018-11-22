@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="bt_app_name">Bluetooth</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="cx62_bt_please_message">Please search and match the connection, or use the phone to search the system:</string>
+    <string name="cx62_bt_unpaired">Unpaired</string>
+    <string name="cx62_bt_dialog_connecting">The device is connecting…</string>
+    <string name="cx62_bt_dialog_cancel">Cancel</string>
+    <string name="cx62_bt_dialog_connect_fail">Connection failed!</string>
+    <string name="cx62_bt_dialog_connect_success">Connect successfully!</string>
+    <string name="cx62_bt_dialog_del_title">Are you sure to delete the device?</string>
+    <string name="cx62_bt_dialog_del_message">After deletion, all information of the device will be deleted</string>
+    <string name="cx62_bt_dialog_yes">Yes</string>
+    <string name="cx62_bt_dialog_no">No</string>
+    <string name="cx62_bt_refresh">Refresh</string>
+    <string name="cx62_bt_refresh_please_refresh">Please click "refresh" to search again. </string>
+    <string name="cx62_bt_dialog_bt_close_tip">The BT function is turned off, do you want to turn on?</string>
+    <string name="cx62_bt_function">BT Switch</string>
+    <string name="cx62_bt_settings_auto_connect">Auto-Connect</string>
+    <string name="cx62_bt_settings_auto_answer">Auto-Answer</string>
+    <string name="cx62_bt_settings_auto_read">Talkback</string>
+    <string name="cx62_bt_settings_pin_code">Pairing code</string>
+    <string name="cx62_bt_settings_device_name">Device name</string>
+    <string name="cx62_bt_settings_auto_sync_ab">Auto-Synchronize Phonebook</string>
+    <string name="cx62_bt_settings_sync_ab">Synchronize phonebook</string>
+    <string name="cx62_bt_settings_sync">Synchronize</string>
+    <string name="cx62_bt_dialog_bt_opening">Turning on BT…</string>
+    <string name="cx62_bt_dialog_bt_open_success">Bluetooth turned on!</string>
+    <string name="cx62_bt_dialog_bt_open_fail">Bluetooth turn on failed, please try again!</string>
+    <string name="cx62_bt_search">Search</string>
+    <string name="cx62_bt_dialog_if_sync_contacts">Do you want to synchronize phonebook?</string>
+    <string name="cx62_bt_dialog_sync_contacts">Synchronizing phonebook …</string>
+    <string name="cx62_bt_no_contacts">No contacts!</string>
+    <string name="cx62_bt_dialog_sync_fail">Synchronize failed!</string>
+    <string name="cx62_bt_dialog_sync_no_count">Failed, please check whether the phone authorized to synchronize contacts</string>
+    <string name="cx62_bt_dialog_sync_record_no_count"> Failed, please check whether the phone authorized to synchronize records</string>
+    <string name="cx62_bt_dialog_sync_ok">Synchronize successfully!</string>
+    <string name="cx62_bt_dialog_if_sync_calllogs">Do you want to synchronize calllog?</string>
+    <string name="cx62_bt_no_call_log">No call records!</string>
+    <string name="cx62_bt_dialog_sync_calllogs">Synchronizing calllogs…</string>
+    <string name="cx62_bt_dialog_check_contacts">Check whether the phone is authorized to synchronize the address book…</string>
+    <string name="cx62_bt_calling_state_dialing">Dialing…</string>
+    <string name="cx62_bt_calling_state_incoming">Calling</string>
+    <string name="cx62_bt_calling_state_active">Call…</string>
+    <string name="cx62_bt_calling_state_over">Call ended</string>
+    <string name="cx62_bt_please_manual_sync">Please press"setting" to synchronize phonebook manually.</string>
+    <string name="cx62_bt_syncing_contacts">Syncing Contacts</string>
+    <string name="cx62_bt_syncing_call_logs">Syncing Call Logs</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="cx62_bt_open_or_again">Please confirm whether Bluetooth is open or try again later.</string>
+    <string name="cx62_bt_settings_bt_connect">Bluetooth connect</string>
+    <string name="cx62_bt_refresh_no_device">Can not find the device!</string>
+    <string name="cx62_bt_dialog_delete_addressbook">Deleting the address book data…</string>
+    <string name="cx62_bt_dialog_delete_ok">Delete finished!</string>
+    <string name="cx62_bt_dialog_loading">Load the data…</string>
+    <string name="cx62_bt_dialog_disconnect_bt">Disconnect the current Bluetooth connection?</string>
+    <string name="cx62_bt_calling_state_retain">Retain</string>
+    <string name="cx62_bt_calling_name_or">or</string>
+    <string name="cx62_bt_search_start">Begin searching</string>
+    <string name="cx62_bt_search_finish">Load successful</string>
+    <string name="cx62_bt_unknown_title">unknow song</string>
+    <string name="cx62_bt_unknown_artist">unknow artist</string>
+    <string name="cx62_bt_unknown_album">unknow album</string>
+    <string name="cx62_bt_no_music_data">No Bluetooth music data receive</string>
+    <string name="cx62_bt_unknown">unknow</string>
+    <string name="cx62_bt_incoming_call">Incoming call</string>
+    <string name="cx62_bt_musicjump_dialog">No Bluetooth device, go to the phone function to connect a Bluetooth device.</string>
+    <string name="cx62_bt_phone_number_invalid">Invalid phone number!</string>
+
+    <string name="bt_devices_name">Device name</string>
+    <string name="bt_devices_module_version">蓝牙模块版本</string>
+    <string name="bt_break">Disconnect</string>
+
+    <string name="bt_number_fragment">BT Dialing</string>
+    <string name="bt_contact_fragment">BT Phonebook</string>
+    <string name="bt_calllog_fragment">BT Calllogs</string>
+    <string name="bt_music_fragment">BT Music</string>
+    <string name="bt_setting_fragment">BT Setting</string>
+    <string name="bt_connect_fragment">BT Connection</string>
+</resources>
