@@ -343,7 +343,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
-        if (!targetFragment.isAdded()) {
+
+        getSupportFragmentManager().getFragments().contains(targetFragment);
+
+        if (!targetFragment.isAdded() && !getSupportFragmentManager().getFragments().contains(targetFragment)) {
             if (null != currentFragment) {
                 transaction.hide(currentFragment);
             }

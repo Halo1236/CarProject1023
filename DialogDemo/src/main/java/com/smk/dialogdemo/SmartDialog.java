@@ -14,12 +14,14 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
     public static final int MARGIN_BOTTOM = 2;
     public static final int MARGIN_LEFT = 3;
     public static final int MARGIN_RIGHT = 4;
-    public static final int CENTER_HORIZONTAL = 5;
 
     public static final int ALIGN_TOP = 1;
     public static final int ALIGN_BOTTOM = 2;
     public static final int ALIGN_LEFT = 3;
     public static final int ALIGN_RIGHT = 4;
+    public static final int ALIGN_CENTER_VERTICAL = 5;
+    public static final int ALIGN_CENTER_HORIZONTAL = 6;
+    public static final int ALIGN_CENTER_IN_PARENT = 7;
 
     public static final int TITLE_FIRST = 1;
     public static final int TITLE_SECOND = 2;
@@ -86,43 +88,64 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
         return this;
     }
 
-    public SmartDialog setFirstTitleMargin(int marginKey, int marginValue) {
-        RelativeLayout.LayoutParams firstTitleLayoutParams = (RelativeLayout.LayoutParams) tv_title_first.getLayoutParams();
+    public SmartDialog setTitleMargin(int titleId, int marginKey, int marginValue) {
+        RelativeLayout.LayoutParams titleLayoutParams = null;
+        TextView currentTitle = null;
+
+        if (TITLE_FIRST == titleId) {
+            currentTitle = tv_title_first;
+        } else if (TITLE_SECOND == titleId) {
+            currentTitle = tv_title_second;
+        }
+
+        if (null == currentTitle) {
+            return this;
+        }
+
+        titleLayoutParams = (RelativeLayout.LayoutParams) currentTitle.getLayoutParams();
         switch (marginKey) {
             case MARGIN_TOP:
-                firstTitleLayoutParams.topMargin = marginValue;
+                titleLayoutParams.topMargin = marginValue;
                 break;
             case MARGIN_BOTTOM:
-                firstTitleLayoutParams.bottomMargin = marginValue;
+                titleLayoutParams.bottomMargin = marginValue;
                 break;
             case MARGIN_LEFT:
-                firstTitleLayoutParams.leftMargin = marginValue;
+                titleLayoutParams.leftMargin = marginValue;
                 break;
             case MARGIN_RIGHT:
-                firstTitleLayoutParams.rightMargin = marginValue;
+                titleLayoutParams.rightMargin = marginValue;
                 break;
         }
-        tv_title_first.setLayoutParams(firstTitleLayoutParams);
+        currentTitle.setLayoutParams(titleLayoutParams);
         return this;
     }
 
-    public SmartDialog setSecondTitleMargin(int marginKey, int marginValue) {
-        RelativeLayout.LayoutParams layoutTitleLayoutParams = (RelativeLayout.LayoutParams) tv_title_second.getLayoutParams();
-        switch (marginKey) {
-            case MARGIN_TOP:
-                layoutTitleLayoutParams.topMargin = marginValue;
+    public SmartDialog setTitleLayoutAlignParent(int alignType) {
+        RelativeLayout.LayoutParams layoutTitleParams = (RelativeLayout.LayoutParams) layout_title.getLayoutParams();
+        switch (alignType) {
+            case ALIGN_TOP:
+                layoutTitleParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 break;
-            case MARGIN_BOTTOM:
-                layoutTitleLayoutParams.bottomMargin = marginValue;
+            case ALIGN_BOTTOM:
+                layoutTitleParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 break;
-            case MARGIN_LEFT:
-                layoutTitleLayoutParams.leftMargin = marginValue;
+            case ALIGN_LEFT:
+                layoutTitleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 break;
-            case MARGIN_RIGHT:
-                layoutTitleLayoutParams.rightMargin = marginValue;
+            case ALIGN_RIGHT:
+                layoutTitleParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                break;
+            case ALIGN_CENTER_VERTICAL:
+                layoutTitleParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                break;
+            case ALIGN_CENTER_HORIZONTAL:
+                layoutTitleParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                break;
+            case ALIGN_CENTER_IN_PARENT:
+                layoutTitleParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 break;
         }
-        tv_title_second.setLayoutParams(layoutTitleLayoutParams);
         return this;
     }
 
@@ -147,24 +170,20 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
         return this;
     }
 
-    public SmartDialog setButtonLayoutAlign(int marginKey, int marginValue) {
+    public SmartDialog setButtonLayoutAlignParent(int marginKey) {
         RelativeLayout.LayoutParams layoutButtonLayoutParams = (RelativeLayout.LayoutParams) layout_button.getLayoutParams();
 
         switch (marginKey) {
             case ALIGN_TOP:
-                layoutButtonLayoutParams.topMargin = marginValue;
                 layoutButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 break;
             case ALIGN_BOTTOM:
-                layoutButtonLayoutParams.bottomMargin = marginValue;
                 layoutButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 break;
             case ALIGN_LEFT:
-                layoutButtonLayoutParams.leftMargin = marginValue;
                 layoutButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 break;
             case ALIGN_RIGHT:
-                layoutButtonLayoutParams.rightMargin = marginValue;
                 layoutButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 break;
         }
@@ -172,51 +191,78 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
         return this;
     }
 
-    public SmartDialog setFirstButtonMargin(int marginKey, int marginValue) {
-        RelativeLayout.LayoutParams firstButtonLayoutParams = (RelativeLayout.LayoutParams) btn_first.getLayoutParams();
+    public SmartDialog setButtonMargin(int btnId, int marginKey, int marginValue) {
+        Button curBtn = null;
+        RelativeLayout.LayoutParams btnLayoutParams = null;
+        if (BUTTON_FIRST == btnId) {
+            curBtn = btn_first;
+        } else if (BUTTON_SECOND == btnId) {
+            curBtn = btn_second;
+        }
+
+        if (null == curBtn) {
+            return this;
+        }
+
+        btnLayoutParams = (RelativeLayout.LayoutParams) curBtn.getLayoutParams();
         switch (marginKey) {
             case MARGIN_TOP:
-                firstButtonLayoutParams.topMargin = marginValue;
+                btnLayoutParams.topMargin = marginValue;
                 break;
             case MARGIN_BOTTOM:
-                firstButtonLayoutParams.bottomMargin = marginValue;
+                btnLayoutParams.bottomMargin = marginValue;
                 break;
             case MARGIN_LEFT:
-                firstButtonLayoutParams.leftMargin = marginValue;
+                btnLayoutParams.leftMargin = marginValue;
                 break;
             case MARGIN_RIGHT:
-                firstButtonLayoutParams.rightMargin = marginValue;
-                break;
-            case CENTER_HORIZONTAL:
-                firstButtonLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                btnLayoutParams.rightMargin = marginValue;
                 break;
         }
-        btn_first.setLayoutParams(firstButtonLayoutParams);
+        if (null != btnLayoutParams) {
+            curBtn.setLayoutParams(btnLayoutParams);
+        }
         return this;
     }
 
-    public SmartDialog setSecondButtonMargin(int marginKey, int marginValue) {
-        RelativeLayout.LayoutParams secondButtonLayoutParams = (RelativeLayout.LayoutParams) btn_second.getLayoutParams();
+    public SmartDialog setButtonAlignParent(int btnId, int marginKey) {
+        RelativeLayout.LayoutParams btnLayoutParams = null;
+        Button curBtn = null;
+
+        if (BUTTON_FIRST == btnId) {
+            curBtn = btn_first;
+        } else if (BUTTON_SECOND == btnId) {
+            curBtn = btn_second;
+        }
+
+        if (null == curBtn) {
+            return this;
+        }
+
+        btnLayoutParams = (RelativeLayout.LayoutParams) curBtn.getLayoutParams();
         switch (marginKey) {
-            case MARGIN_TOP:
-                secondButtonLayoutParams.topMargin = marginValue;
+            case ALIGN_TOP:
+                btnLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 break;
-            case MARGIN_BOTTOM:
-                secondButtonLayoutParams.bottomMargin = marginValue;
+            case ALIGN_BOTTOM:
+                btnLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 break;
-            case MARGIN_LEFT:
-                secondButtonLayoutParams.leftMargin = marginValue;
+            case ALIGN_LEFT:
+                btnLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 break;
-            case MARGIN_RIGHT:
-                secondButtonLayoutParams.rightMargin = marginValue;
+            case ALIGN_RIGHT:
+                btnLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 break;
-            case CENTER_HORIZONTAL:
-                secondButtonLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            case ALIGN_CENTER_HORIZONTAL:
+                btnLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                 break;
         }
-        btn_second.setLayoutParams(secondButtonLayoutParams);
+        if (null != btnLayoutParams) {
+            curBtn.setLayoutParams(btnLayoutParams);
+        }
         return this;
     }
+
 
     public SmartDialog setTitleText(int titleId, String text) {
         switch (titleId) {
@@ -286,14 +332,14 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
             case R.id.btn_first:
                 if (null != mFisrtButtonClickListener) {
                     mFisrtButtonClickListener.onClick(v);
-                    super.dismiss();
                 }
+                super.dismiss();
                 break;
             case R.id.btn_second:
                 if (null != mSecondButtonClickListener) {
                     mSecondButtonClickListener.onClick(v);
-                    super.dismiss();
                 }
+                super.dismiss();
                 break;
         }
     }
@@ -319,6 +365,23 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
                 tv_title_second.setVisibility(visibility);
                 break;
         }
+        return this;
+    }
+
+    public SmartDialog setButtonVisibility(int btnId, int visibility) {
+        switch (btnId) {
+            case BUTTON_FIRST:
+                btn_first.setVisibility(visibility);
+                break;
+            case BUTTON_SECOND:
+                btn_second.setVisibility(visibility);
+                break;
+        }
+        return this;
+    }
+
+    public SmartDialog setButtonLayoutVisibility(int visibility) {
+        layout_button.setVisibility(visibility);
         return this;
     }
 
