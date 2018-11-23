@@ -21,14 +21,17 @@ public class DialogFactory {
                                                                  String secondTitle,
                                                                  String fistBtnText,
                                                                  String secondBtnText,
+                                                                 int globalDialogBg,
+                                                                 int firstBtnBg,
+                                                                 int secondBtnBg,
                                                                  View.OnClickListener firstBtnCallback,
                                                                  View.OnClickListener secondBtnCallback) {
         SmartDialog smartDialog = new SmartDialog(ctx);
         smartDialog
-                .setRootLayoutBackground(R.drawable.dialog_global_bg)
+                .setRootLayoutBackground(globalDialogBg)
                 .setRootLayoutSize(500, 260)
-                .setButtonBackground(SmartDialog.BUTTON_FIRST, R.drawable.dialog_btn_positive_normal)
-                .setButtonBackground(SmartDialog.BUTTON_SECOND, R.drawable.dialog_btn_negative_normal)
+                .setButtonBackground(SmartDialog.BUTTON_FIRST, firstBtnBg)
+                .setButtonBackground(SmartDialog.BUTTON_SECOND, secondBtnBg)
                 .setTitleMargin(SmartDialog.TITLE_FIRST, SmartDialog.MARGIN_TOP, 45)
                 .setTitleMargin(SmartDialog.TITLE_SECOND, SmartDialog.MARGIN_TOP, 25)
                 .setButtonLayoutMargin(SmartDialog.MARGIN_BOTTOM, 25)
@@ -64,14 +67,17 @@ public class DialogFactory {
                                                                  String title,
                                                                  String fistBtnText,
                                                                  String secondBtnText,
+                                                                 int globalBg,
+                                                                 int firstBtnBg,
+                                                                 int secondBtnBg,
                                                                  View.OnClickListener firstBtnCallback,
                                                                  View.OnClickListener secondBtnCallback) {
         SmartDialog smartDialog = new SmartDialog(ctx);
         smartDialog
-                .setRootLayoutBackground(R.drawable.dialog_global_bg)
+                .setRootLayoutBackground(globalBg)
                 .setRootLayoutSize(500, 260)
-                .setButtonBackground(SmartDialog.BUTTON_FIRST, R.drawable.dialog_btn_positive_normal)
-                .setButtonBackground(SmartDialog.BUTTON_SECOND, R.drawable.dialog_btn_negative_normal)
+                .setButtonBackground(SmartDialog.BUTTON_FIRST, firstBtnBg)
+                .setButtonBackground(SmartDialog.BUTTON_SECOND, secondBtnBg)
                 .setTitleMargin(SmartDialog.TITLE_FIRST, SmartDialog.MARGIN_TOP, 45)
                 .setButtonLayoutMargin(SmartDialog.MARGIN_BOTTOM, 25)
                 .setButtonLayoutAlignParent(SmartDialog.ALIGN_BOTTOM)
@@ -99,12 +105,17 @@ public class DialogFactory {
      * @param btnCallback
      * @return
      */
-    public static SmartDialog createOneTitleOneButtonThemeDialog(Context ctx, String title, String btnText, View.OnClickListener btnCallback) {
+    public static SmartDialog createOneTitleOneButtonThemeDialog(Context ctx
+            , String title
+            , String btnText
+            ,int globalDialogBg
+            ,int btnBg
+            , View.OnClickListener btnCallback) {
         SmartDialog smartDialog = new SmartDialog(ctx);
         smartDialog
-                .setRootLayoutBackground(R.drawable.dialog_global_bg)
+                .setRootLayoutBackground(globalDialogBg)
                 .setRootLayoutSize(500, 260)
-                .setButtonBackground(SmartDialog.BUTTON_SECOND, R.drawable.dialog_btn_negative_normal)
+                .setButtonBackground(SmartDialog.BUTTON_SECOND, btnBg)
                 .setTitleMargin(SmartDialog.TITLE_FIRST, SmartDialog.MARGIN_TOP, 45)
                 .setButtonLayoutMargin(SmartDialog.MARGIN_BOTTOM, 25)
                 .setButtonLayoutAlignParent(SmartDialog.ALIGN_BOTTOM)
@@ -113,8 +124,8 @@ public class DialogFactory {
                 .setButtonAlignParent(SmartDialog.BUTTON_SECOND, SmartDialog.ALIGN_CENTER_HORIZONTAL)
                 .setTitleTextSize(SmartDialog.TITLE_FIRST, 28)
                 .setButtonTextSize(SmartDialog.BUTTON_SECOND, 26)
-                .setTitleText(SmartDialog.TITLE_FIRST, "正在连接...")
-                .setButtonText(SmartDialog.BUTTON_SECOND, "取消")
+                .setTitleText(SmartDialog.TITLE_FIRST, title)
+                .setButtonText(SmartDialog.BUTTON_SECOND, btnText)
                 .setButtonCallback(SmartDialog.BUTTON_SECOND, btnCallback);
         return smartDialog;
     }
@@ -127,10 +138,13 @@ public class DialogFactory {
      * @param secondTitle
      * @return
      */
-    public static SmartDialog createTwoTitleThemeDialog(Context ctx, String firstTitle, String secondTitle) {
+    public static SmartDialog createTwoTitleThemeDialog(Context ctx
+            , String firstTitle
+            , String secondTitle
+            ,int gloabDialogBg) {
         SmartDialog smartDialog = new SmartDialog(ctx);
         smartDialog
-                .setRootLayoutBackground(R.drawable.dialog_global_bg)
+                .setRootLayoutBackground(gloabDialogBg)
                 .setRootLayoutSize(500, 260)
                 .setTitleMargin(SmartDialog.TITLE_SECOND, SmartDialog.MARGIN_TOP, 25)
                 .setTitleLayoutAlignParent(SmartDialog.ALIGN_CENTER_IN_PARENT)// 标题布局水平垂直居中
@@ -149,10 +163,10 @@ public class DialogFactory {
      * @param title
      * @return
      */
-    public static SmartDialog createOneTitleThemeDialog(Context ctx, String title) {
+    public static SmartDialog createOneTitleThemeDialog(Context ctx, String title,int globalBg) {
         SmartDialog smartDialog = new SmartDialog(ctx);
         smartDialog
-                .setRootLayoutBackground(R.drawable.dialog_global_bg)
+                .setRootLayoutBackground(globalBg)
                 .setRootLayoutSize(500, 260)
                 .setTitleLayoutAlignParent(SmartDialog.ALIGN_CENTER_IN_PARENT)
                 .setButtonLayoutVisibility(View.GONE)

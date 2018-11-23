@@ -36,6 +36,9 @@ public class MainActivity extends FragmentActivity {
                     "确定删除?"
                     , "删除后，该设备所有信息将一并删除。"
                     , "確定", "取消"
+                    ,R.drawable.dialog_global_bg
+                    ,R.drawable.dialog_btn_positive_normal
+                    ,R.drawable.dialog_btn_negative_normal
                     , null
                     , null);
         }
@@ -54,6 +57,9 @@ public class MainActivity extends FragmentActivity {
                     , "蓝牙功能已关闭，是否开启？"
                     , "确认"
                     , "取消"
+                    ,R.drawable.dialog_global_bg
+                    ,R.drawable.dialog_btn_positive_normal
+                    ,R.drawable.dialog_btn_negative_normal
                     , null
                     , null);
         }
@@ -71,6 +77,8 @@ public class MainActivity extends FragmentActivity {
             smartDialog = DialogFactory.createOneTitleOneButtonThemeDialog(this
                     , "正在连接..."
                     , "取消"
+                    ,R.drawable.dialog_global_bg
+                    ,R.drawable.dialog_btn_negative_normal
                     , null);
         }
         if (!smartDialog.isShowing()) {
@@ -85,7 +93,8 @@ public class MainActivity extends FragmentActivity {
         if (null == smartDialog) {
             smartDialog = DialogFactory.createTwoTitleThemeDialog(this
                     ,"同步失败！"
-                    ,"请\"设置\"，手动同步。");
+                    ,"请\"设置\"，手动同步。"
+                    ,R.drawable.dialog_global_bg);
         }
         if (!smartDialog.isShowing()) {
             smartDialog.show();
@@ -97,7 +106,7 @@ public class MainActivity extends FragmentActivity {
      */
     private void showSmartDialog5() {
         if (null == smartDialog) {
-            smartDialog = DialogFactory.createOneTitleThemeDialog(this,"正在连接...");
+            smartDialog = DialogFactory.createOneTitleThemeDialog(this,"正在连接...",R.drawable.dialog_global_bg);
         }
         if (!smartDialog.isShowing()) {
             smartDialog.show();
