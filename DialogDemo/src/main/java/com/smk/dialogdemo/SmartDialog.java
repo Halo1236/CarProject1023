@@ -2,6 +2,8 @@ package com.smk.dialogdemo;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -31,8 +33,7 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
     private View.OnClickListener mFisrtButtonClickListener;
     private View.OnClickListener mSecondButtonClickListener;
 
-    private int mFirstButtonMarginLeft = 0;
-    private int mSecondButtonMarginLeft = 0;
+    private Handler _handler;
 
     private RelativeLayout
             layout_root,
@@ -45,12 +46,15 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
             btn_first,
             btn_second;
 
+    private long mDelayTime = 0;
+    private boolean mIsTimeoutDismiss = false;
+
     public SmartDialog(Context context) {
         super(context, R.style.SmartDialog_Theme);
+        _handler = new Handler(Looper.getMainLooper());
         View contentView = View.inflate(context, R.layout.dialog_smart, null);
         setContentView(contentView);
         initViews();
-        initSetDefaultLayoutParams();
     }
 
     private void initViews() {
@@ -64,8 +68,44 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
         btn_second = (Button) findViewById(R.id.btn_second);
     }
 
-    void initSetDefaultLayoutParams() {
+    private Runnable mTimeoutRunTaskRunnable = new Runnable() {
+        @Override
+        public void run() {
+            dismiss();
+        }
+    };
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_first:
+                if (null != mFisrtButtonClickListener) {
+                    mFisrtButtonClickListener.onClick(v);
+                }
+                super.dismiss();
+                break;
+            case R.id.btn_second:
+                if (null != mSecondButtonClickListener) {
+                    mSecondButtonClickListener.onClick(v);
+                }
+                super.dismiss();
+                break;
+        }
+    }
+
+    @Override
+    public void show() {
+        if(mIsTimeoutDismiss){
+            _handler.removeCallbacksAndMessages(null);
+            _handler.postDelayed(mTimeoutRunTaskRunnable,mDelayTime);
+        }
+        super.show();
+    }
+
+    @Override
+    public void dismiss() {
+        _handler.removeCallbacksAndMessages(null);
+        super.dismiss();
     }
 
     /**
@@ -326,23 +366,7 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
         return this;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_first:
-                if (null != mFisrtButtonClickListener) {
-                    mFisrtButtonClickListener.onClick(v);
-                }
-                super.dismiss();
-                break;
-            case R.id.btn_second:
-                if (null != mSecondButtonClickListener) {
-                    mSecondButtonClickListener.onClick(v);
-                }
-                super.dismiss();
-                break;
-        }
-    }
+
 
     public SmartDialog setButtonBackground(int buttonId, int resId) {
         switch (buttonId) {
@@ -382,6 +406,16 @@ public class SmartDialog extends Dialog implements View.OnClickListener {
 
     public SmartDialog setButtonLayoutVisibility(int visibility) {
         layout_button.setVisibility(visibility);
+        return this;
+    }
+
+    public SmartDialog setTimeout(long delayTime){
+        this.mDelayTime = delayTime;
+        return this;
+    }
+
+    public SmartDialog enableTimeoutDismiss(boolean enable){
+        this.mIsTimeoutDismiss = enable;
         return this;
     }
 

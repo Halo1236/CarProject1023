@@ -171,6 +171,8 @@ public class DialogFactory {
                 .setTitleLayoutAlignParent(SmartDialog.ALIGN_CENTER_IN_PARENT)
                 .setButtonLayoutVisibility(View.GONE)
                 .setTitleVisibility(SmartDialog.TITLE_SECOND, View.GONE)
+                .enableTimeoutDismiss(true)
+                .setTimeout(2000)
                 .setTitleTextSize(SmartDialog.TITLE_FIRST, 28)
                 .setTitleText(SmartDialog.TITLE_FIRST, title);
         return smartDialog;
