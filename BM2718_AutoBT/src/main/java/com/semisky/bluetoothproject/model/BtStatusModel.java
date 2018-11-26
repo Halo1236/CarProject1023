@@ -1,7 +1,5 @@
 package com.semisky.bluetoothproject.model;
 
-import android.util.Log;
-
 import com.semisky.bluetoothproject.constant.BtConstant;
 import com.semisky.bluetoothproject.entity.CallNameActive;
 import com.semisky.bluetoothproject.utils.Logger;
@@ -117,6 +115,20 @@ public class BtStatusModel {
      */
     private boolean isAccOnRecoverMusic;
 
+    /**
+     * 是否正在播放蓝牙音乐
+     */
+    private boolean isPlayMusic;
+
+    public boolean isPlayMusic() {
+        Logger.d(TAG, "isPlayMusic: " + isPlayMusic);
+        return isPlayMusic;
+    }
+
+    public void setPlayMusic(boolean playMusic) {
+        isPlayMusic = playMusic;
+    }
+
     public boolean isAccOnRecoverMusic() {
         return isAccOnRecoverMusic;
     }
@@ -160,12 +172,12 @@ public class BtStatusModel {
     }
 
     public boolean isNaviView() {
-        Log.d(TAG, "isNaviView: " + isNaviView);
+        Logger.d(TAG, "isNaviView: " + isNaviView);
         return isNaviView;
     }
 
     public void setNaviView(boolean naviView) {
-        Log.d(TAG, "setNaviView: " + naviView);
+        Logger.d(TAG, "setNaviView: " + naviView);
         isNaviView = naviView;
     }
 
@@ -195,7 +207,7 @@ public class BtStatusModel {
     }
 
     public boolean isBTConnect() {
-        Log.d(TAG, "isBTConnect: " + isBTConnect);
+        Logger.d(TAG, "isBTConnect: " + isBTConnect);
         return isBTConnect;
     }
 

@@ -17,6 +17,8 @@ import com.semisky.bluetoothproject.utils.Logger;
 import com.semisky.bluetoothproject.view.BtMessageDialog;
 import com.semisky.bluetoothproject.view.DialogTips;
 
+import java.util.Locale;
+
 /**
  * Created by chenhongrui on 2018/8/1
  * <p>
@@ -80,6 +82,18 @@ public class BtSettingFragment extends BaseFragment<BtSettingInterface, BtSettin
         tvSetAnswerSwitch = view.findViewById(R.id.tvSetAnswerSwitch);
         rlBreakConnectItem = view.findViewById(R.id.rlBreakConnectItem);
         rlSyncContentItem = view.findViewById(R.id.rlSyncContentItem);
+
+        Locale locale = getResources().getConfiguration().locale;
+        String language = locale.getLanguage();
+        if (language.contains("zh")) {
+            tvSetContactSwitch.setTrackResource(R.drawable.btn_set_switch_selector);
+            tvSetConnectSwitch.setTrackResource(R.drawable.btn_set_switch_selector);
+            tvSetAnswerSwitch.setTrackResource(R.drawable.btn_set_switch_selector);
+        } else {
+            tvSetContactSwitch.setTrackResource(R.drawable.btn_eng_set_switch_selector);
+            tvSetConnectSwitch.setTrackResource(R.drawable.btn_eng_set_switch_selector);
+            tvSetAnswerSwitch.setTrackResource(R.drawable.btn_eng_set_switch_selector);
+        }
 
         tvSetAnswerSwitch.setOnCheckedChangeListener(this);
         tvSetContactSwitch.setOnCheckedChangeListener(this);

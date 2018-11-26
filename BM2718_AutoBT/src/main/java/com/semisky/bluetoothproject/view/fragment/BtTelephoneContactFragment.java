@@ -145,6 +145,8 @@ public class BtTelephoneContactFragment extends BaseFragment<ContactsInterface, 
             if(!BtSPUtil.getInstance().getAutoSyncBookStateSP(getContext())){
                 Logger.d(TAG, "download: 下载联系人");
                 startDownload();
+            }else{
+                onDownloadFailed();
             }
 
         }

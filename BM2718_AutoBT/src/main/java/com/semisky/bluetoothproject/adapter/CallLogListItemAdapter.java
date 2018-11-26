@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.semisky.bluetoothproject.R;
 import com.semisky.bluetoothproject.entity.CallLogEntity;
+import com.semisky.bluetoothproject.utils.Logger;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class CallLogListItemAdapter extends ArrayAdapter<CallLogEntity> {
 
-    private static final String TAG = "CallLogListItemAdapter";
+    private static final String TAG = Logger.makeTagLog(CallLogListItemAdapter.class);
 
     private int resourceID;
     private Context context;

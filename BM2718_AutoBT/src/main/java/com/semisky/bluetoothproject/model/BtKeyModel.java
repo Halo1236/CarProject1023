@@ -158,6 +158,14 @@ public class BtKeyModel {
                             }
                         }
                         break;
+                    case KeyManager.KEYCODE_PWR:
+
+                        if (action == KeyManager.ACTION_LONG_PRESS) {
+                            if (cancelSearchInterface != null) {
+                                cancelSearchInterface.cancelSearchDevice();
+                            }
+                        }
+                        break;
                 }
             }
         };

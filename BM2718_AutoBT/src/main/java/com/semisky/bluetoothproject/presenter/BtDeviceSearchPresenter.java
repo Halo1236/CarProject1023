@@ -5,6 +5,7 @@ import android.util.Log;
 import com.semisky.bluetoothproject.model.BtDeviceSearchModel;
 import com.semisky.bluetoothproject.model.BtHfpModel;
 import com.semisky.bluetoothproject.presenter.viewInterface.DeviceSearchInterface;
+import com.semisky.bluetoothproject.utils.Logger;
 
 /**
  * Created by chenhongrui on 2018/8/7
@@ -34,6 +35,7 @@ public class BtDeviceSearchPresenter extends BasePresenter<DeviceSearchInterface
     }
 
     public void unregisterListener() {
+        Logger.d(TAG, "unregisterListener: ");
         btDeviceSearchModel.unSetListener();
         btHfpModel.unSetListener();
     }
@@ -61,6 +63,7 @@ public class BtDeviceSearchPresenter extends BasePresenter<DeviceSearchInterface
     }
 
     public void setBtEnable(boolean setBtEnable) {
+        Logger.d(TAG, "setBtEnable: " + setBtEnable);
         btBaseUiCommandMethod.setBtEnable(setBtEnable);
     }
 

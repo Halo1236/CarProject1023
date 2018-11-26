@@ -7,10 +7,12 @@ import android.util.Log;
 
 import com.nforetek.bt.aidl.NfHfpClientCall;
 import com.nforetek.bt.res.NfDef;
+import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.bluetoothproject.application.BtApplication;
 import com.semisky.bluetoothproject.entity.CallLogEntity;
 import com.semisky.bluetoothproject.entity.ContactsEntity;
 import com.semisky.bluetoothproject.entity.DevicesListEntity;
+import com.semisky.bluetoothproject.manager.BtMiddleSettingManager;
 import com.semisky.bluetoothproject.presenter.BtBaseUiCommandMethod;
 import com.semisky.bluetoothproject.presenter.viewInterface.DeviceSearchInterface;
 import com.semisky.bluetoothproject.presenter.viewInterface.HFPAudioStateInterface;
@@ -96,14 +98,18 @@ public class BtHfpModel implements Cx62BtIHfpResponse {
     @Override
     public void onHfpStateChanged(String address, int prevState, int newState) {
         if (prevState == NfDef.STATE_CONNECTED && newState == NfDef.STATE_DISCONNECTING) {
+            Logger.d(TAG, "onHfpStateChanged: 断开中");
             informDisconnecting(address);
         } else if (prevState != NfDef.STATE_CONNECTED && newState == NfDef.STATE_CONNECTED) {
             Logger.d(TAG, "onHfpStateChanged: 已连接");
+            //连接上蓝牙功能，要求默认静音(不明白这种要求，那打开音频通道的方法还有什么意义)
+            btBaseUiCommandMethod.muteA2dpRender(true);
             informConnected(address);
         } else if (prevState == NfDef.STATE_READY && newState == NfDef.STATE_CONNECTING) {
+            Logger.d(TAG, "onHfpStateChanged: 连接中");
             informConnecting(address);
         } else if (prevState > NfDef.STATE_READY && newState == NfDef.STATE_READY) {
-            Logger.d(TAG, "onHfpStateChanged:已断开 ");
+            Logger.d(TAG, "onHfpStateChanged: 已断开 ");
             informDisconnect(address);
         }
     }
@@ -125,14 +131,13 @@ public class BtHfpModel implements Cx62BtIHfpResponse {
      * 已连接
      */
     private void informConnected(String address) {
-        if (hfpStatusInterface != null) {
-            hfpStatusInterface.stateConnected(address);
-        }
-
         this.address = address;
         new Thread(checkConnect).start();
-        initStatus(address);
-        saveDeviceInformation(address);
+        checkLoopTimeout();
+    }
+
+    private void checkLoopTimeout() {
+
     }
 
     /**
@@ -161,6 +166,8 @@ public class BtHfpModel implements Cx62BtIHfpResponse {
         }
     }
 
+    private int timeout;
+
     private Runnable checkConnect = new Runnable() {
         @Override
         public void run() {
@@ -170,12 +177,30 @@ public class BtHfpModel implements Cx62BtIHfpResponse {
                 if (disposableObserver != null) {
                     disposableObserver.stateConnected(address);
                 }
+
+                if (hfpStatusInterface != null) {
+                    hfpStatusInterface.stateConnected(address);
+                }
+
                 Logger.d(TAG, "checkBtServiceConnect: 连接成功");
 //                BtCallStatusModel.getInstance().recoverCallView(); 7822 暂时废除
                 checkACCStatus();
+
+                initStatus(address);
+                saveDeviceInformation(address);
+                //设置蓝牙连接成功图标
+                BtMiddleSettingManager.getInstance().
+                        setBtConnectionState(AutoConstants.BtConnectionState.STATE_CONNECTED);
             } else {
-                Logger.d(TAG, "checkBtServiceConnect: 判断连接中..");
-                handler.postDelayed(checkConnect, 100);
+                //防止10秒超时
+                if (timeout <= 10000) {
+                    Logger.d(TAG, "checkBtServiceConnect: 判断连接中..");
+                    handler.postDelayed(checkConnect, 100);
+                    timeout += 100;
+                } else {
+                    Logger.e(TAG, "checkBtServiceConnect: 超时停止检测");
+                    removeCallBackRunnable();
+                }
             }
         }
     };
@@ -203,10 +228,10 @@ public class BtHfpModel implements Cx62BtIHfpResponse {
         }
     }
 
-
-    public void removeCallBackRunnable() {
+    private void removeCallBackRunnable() {
         Logger.d(TAG, "removeCallBackRunnable: ");
         handler.removeCallbacks(checkConnect);
+        timeout = 0;
     }
 
 
@@ -285,7 +310,7 @@ public class BtHfpModel implements Cx62BtIHfpResponse {
         BtSPUtil.getInstance().setSyncCallLogStateSP(context, false);
         LitePal.deleteAllAsync(CallLogEntity.class);
         LitePal.deleteAllAsync(ContactsEntity.class);
-        btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.PERMISSION);
+
 
         BtSPUtil.getInstance().setLastConnectAddressSP(context, address);
     }

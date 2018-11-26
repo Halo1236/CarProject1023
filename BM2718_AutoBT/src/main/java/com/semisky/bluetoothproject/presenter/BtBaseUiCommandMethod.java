@@ -635,14 +635,6 @@ public class BtBaseUiCommandMethod extends HandlerThread {
         setA2dpLocalVolume(A2DP_VOLUME_REDUCE_RATE);
     }
 
-    private void muteA2dpVolume(boolean mute) {
-        muteA2dpRender(mute);
-        if (mute) {
-            setA2dpLocalVolume(0);
-        } else {
-            setA2dpLocalVolume(1);
-        }
-    }
 
     public void muteA2dpRender(boolean mute) {
         Logger.d(TAG, "muteA2dpRender: " + mute);
@@ -1278,7 +1270,7 @@ public class BtBaseUiCommandMethod extends HandlerThread {
      * 停止远程设备的扫描过程
      */
     public boolean cancelBtDiscovery() {
-        Logger.d(TAG, "startBtDiscovery");
+        Logger.d(TAG, "cancelBtDiscovery");
         if (checkAutoBTService()) {
             try {
                 return mCommand.cancelBtDiscovery();

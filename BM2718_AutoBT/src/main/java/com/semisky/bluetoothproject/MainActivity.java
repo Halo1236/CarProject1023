@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = Logger.makeTagLog(MainActivity.class);
 
+    private final static String[] MAIN_TAGS = {"KEYBOARD", "CONTACT", "CALL", "MUSIC", "SET"};
+    private final static String[] DEVICE_TAGS = {"DEVICE"};
+
     private FrameLayout llActivityBottom;
 
     private BtServiceManager btServiceManager;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BtTelephoneContactFragment mBtTelephoneContactFragment;
     private BtCallRecordsFragment mBtCallRecordsFragment;
     private BtMusicFragment mBtMusicFragment;
+    private BtMiddleSettingManager btMiddleSettingManager;
 
     private BtStatusModel btStatusModel;
 
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btStatusModel = BtStatusModel.getInstance();
         llActivityBottom = findViewById(R.id.llActivityBottom);
         btServiceManager = BtServiceManager.getInstance();
+        btMiddleSettingManager = BtMiddleSettingManager.getInstance();
 
         btServiceManager.startService();
         btServiceManager.bindService();
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         checkBTConnect();
 
-        BtMiddleSettingManager.getInstance().setAppStatusInForeground(
+        btMiddleSettingManager.setAppStatusInForeground(
                 getResources().getString(R.string.bt_app_name));
     }
 
@@ -116,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void initDevice() {
+    private void initDevice() {
         mBtDeviceSearchFragment = null;//主动刷新设备页面
         initDeviceView();
     }
@@ -140,13 +145,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ibDevicesSelector.setOnClickListener(this);
         ibDevicesSetting.setOnClickListener(this);
 
+        showDeviceFragment();
+    }
+
+    private void showDeviceFragment() {
         if (mBtDeviceSearchFragment == null) {
+            Logger.d(TAG, "showDeviceFragment: ");
             mBtDeviceSearchFragment = new BtDeviceSearchFragment();
         }
-        switchFragment(mBtDeviceSearchFragment);
+        switchFragment(mBtDeviceSearchFragment, DEVICE_TAGS[0]);
     }
 
     private void initMainView() {
+        Logger.d(TAG, "initMainView: 加载连接成功页面");
         View mainView = View.inflate(this, R.layout.main_bottom_view, null);
         llActivityBottom.removeAllViews();
         llActivityBottom.addView(mainView);
@@ -174,9 +185,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int intExtra = intent.getIntExtra(ACTION_START_ACTIVITY, 0);
         Log.d(TAG, "loadFragment: " + intExtra);
         if (intExtra == START_ACTIVITY_VALUE) {
-            showFragment(BtConstant.FragmentFlag.MUSIC);
+            showFragment(BtConstant.FragmentFlag.MUSIC, MAIN_TAGS[3]);
+            intent.putExtra(ACTION_START_ACTIVITY, -1);
         } else {
-            showFragment(btStatusModel.getFragmentFlag());
+            BtConstant.FragmentFlag fragmentFlag = btStatusModel.getFragmentFlag();
+            switch (fragmentFlag) {
+                case KEYBOARD:
+                    showFragment(BtConstant.FragmentFlag.KEYBOARD, MAIN_TAGS[0]);
+                    break;
+                case CONTACT:
+                    showFragment(BtConstant.FragmentFlag.CONTACT, MAIN_TAGS[1]);
+                    break;
+                case CALL:
+                    showFragment(BtConstant.FragmentFlag.CALL, MAIN_TAGS[2]);
+                    break;
+                case MUSIC:
+                    showFragment(BtConstant.FragmentFlag.MUSIC, MAIN_TAGS[3]);
+                    break;
+                case SET:
+                    showFragment(BtConstant.FragmentFlag.SET, MAIN_TAGS[4]);
+                    break;
+
+            }
+
         }
     }
 
@@ -189,8 +220,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         onBtAudioEventListener = new OnBtAudioEventListener() {
             @Override
             public void onAudioLess() {
-//                finish(); 7627
-//                overridePendingTransition(0, 0);
+                //7627 取消 8051 打开
+                //如果当前在蓝牙音乐页面才做finish动作
+                if (btStatusModel.getFragmentFlag() == BtConstant.FragmentFlag.MUSIC) {
+                    finish();
+                    overridePendingTransition(0, 0);
+                }
             }
 
             @Override
@@ -213,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ibDevicesSetting.setEnabled(true);
                 ibDevicesSetting.setImageResource(R.drawable.tag_set_selector);
             } else {
+                showDeviceFragment();//防止极限点击到设置页面
                 ibDevicesSetting.setEnabled(false);
                 ibDevicesSetting.setImageResource(R.drawable.icon_bottom_setting_gray);
             }
@@ -232,14 +268,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBtDeviceSearchFragment.dismissDialogFragment();
         }
 
-        BtMiddleSettingManager.getInstance().setAppStatusInBackground();
+        btMiddleSettingManager.setAppStatusInBackground();
+        setMusicStatus();
+    }
+
+    private void setMusicStatus() {
+        btMiddleSettingManager.setBtMusicStatus(false);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy: ");
-//        BtMiddleSettingManager.getInstance().setAppStatusInDestroy();
+//        btMiddleSettingManager.setAppStatusInDestroy();
         BtMusicAudioFocusModel.getINSTANCE().unRegisterAudioLessListener(onBtAudioEventListener);
         btServiceManager.unbindService();
         unregisterReceiver(mCustomBroadcastReceiver);
@@ -249,34 +290,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ibDevicesSetting:
-                Logger.d(TAG, "ibDevicesSetting: " + ibDevicesSetting);
                 if (mBtSettingFragment == null) {
                     mBtSettingFragment = new BtSettingFragment();
                 }
-                switchFragment(mBtSettingFragment);
+                switchFragment(mBtSettingFragment, MAIN_TAGS[4]);
                 break;
             case R.id.ibDevicesSelector:
-                Logger.d(TAG, "ibDevicesSetting: " + ibDevicesSetting);
-                if (mBtDeviceSearchFragment == null) {
-                    mBtDeviceSearchFragment = new BtDeviceSearchFragment();
-                }
-                switchFragment(mBtDeviceSearchFragment);
+                showDeviceFragment();
                 break;
             case R.id.ibMainKeyboard:
-                showFragment(BtConstant.FragmentFlag.KEYBOARD);
+                showFragment(BtConstant.FragmentFlag.KEYBOARD, MAIN_TAGS[0]);
                 break;
             case R.id.ibMainContact:
-                Logger.d(TAG, "ibDevicesSetting: " + ibDevicesSetting);
-                showFragment(BtConstant.FragmentFlag.CONTACT);
+                showFragment(BtConstant.FragmentFlag.CONTACT, MAIN_TAGS[1]);
                 break;
             case R.id.ibMainRecords:
-                showFragment(BtConstant.FragmentFlag.CALL);
+                showFragment(BtConstant.FragmentFlag.CALL, MAIN_TAGS[2]);
                 break;
             case R.id.ibMainMusic:
-                showFragment(BtConstant.FragmentFlag.MUSIC);
+                showFragment(BtConstant.FragmentFlag.MUSIC, MAIN_TAGS[3]);
                 break;
             case R.id.ibMainSetting:
-                showFragment(BtConstant.FragmentFlag.SET);
+                showFragment(BtConstant.FragmentFlag.SET, MAIN_TAGS[4]);
                 break;
 
             default:
@@ -287,77 +322,79 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Fragment currentFragment;
 
-    private void showFragment(BtConstant.FragmentFlag fragmentFlag) {
+    private void showFragment(BtConstant.FragmentFlag fragmentFlag, String tag) {
         switch (fragmentFlag) {
             case KEYBOARD:
                 Logger.d(TAG, "mBtNumberKeyboardFragment: " + mBtNumberKeyboardFragment);
                 if (mBtNumberKeyboardFragment == null) {
                     mBtNumberKeyboardFragment = new BtNumberKeyboardFragment();
                 }
-                switchFragment(mBtNumberKeyboardFragment);
+                switchFragment(mBtNumberKeyboardFragment, tag);
                 btStatusModel.setFragmentFlag(BtConstant.FragmentFlag.KEYBOARD);
-                BtMiddleSettingManager.getInstance().setBtMusicStatus(false);
+                setMusicStatus();
                 break;
             case CONTACT:
                 Logger.i(TAG, "-------------mBtTelephoneContactFragment:" + mBtTelephoneContactFragment);
                 if (mBtTelephoneContactFragment == null) {
                     mBtTelephoneContactFragment = new BtTelephoneContactFragment();
                 }
-                switchFragment(mBtTelephoneContactFragment);
+                switchFragment(mBtTelephoneContactFragment, tag);
                 btStatusModel.setFragmentFlag(BtConstant.FragmentFlag.CONTACT);
-                BtMiddleSettingManager.getInstance().setBtMusicStatus(false);
+                setMusicStatus();
                 break;
             case CALL:
                 Logger.d(TAG, "mBtCallRecordsFragment: " + mBtCallRecordsFragment);
                 if (mBtCallRecordsFragment == null) {
                     mBtCallRecordsFragment = new BtCallRecordsFragment();
                 }
-                switchFragment(mBtCallRecordsFragment);
+                switchFragment(mBtCallRecordsFragment, tag);
                 btStatusModel.setFragmentFlag(BtConstant.FragmentFlag.CALL);
-                BtMiddleSettingManager.getInstance().setBtMusicStatus(false);
+                setMusicStatus();
                 break;
             case MUSIC:
                 Logger.d(TAG, "mBtMusicFragment: " + mBtMusicFragment);
                 if (mBtMusicFragment == null) {
                     mBtMusicFragment = new BtMusicFragment();
                 }
-                switchFragment(mBtMusicFragment);
+                switchFragment(mBtMusicFragment, tag);
                 btStatusModel.setFragmentFlag(BtConstant.FragmentFlag.MUSIC);
-                BtMiddleSettingManager.getInstance().setBtMusicStatus(true);
+                btMiddleSettingManager.setBtMusicStatus(true);
                 break;
             case SET:
                 Logger.d(TAG, "mBtSettingFragment: " + mBtSettingFragment);
                 if (mBtSettingFragment == null) {
                     mBtSettingFragment = new BtSettingFragment();
                 }
-                switchFragment(mBtSettingFragment);
+                switchFragment(mBtSettingFragment, tag);
                 btStatusModel.setFragmentFlag(BtConstant.FragmentFlag.SET);
-                BtMiddleSettingManager.getInstance().setBtMusicStatus(false);
+                setMusicStatus();
                 break;
         }
     }
 
-    private void switchFragment(Fragment targetFragment) {
+    private void switchFragment(Fragment targetFragment, String tag) {
         if (targetFragment == currentFragment) {
             return;
         }
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction();
 
-        getSupportFragmentManager().getFragments().contains(targetFragment);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        if (!targetFragment.isAdded() && !getSupportFragmentManager().getFragments().contains(targetFragment)) {
+        //&& null == fragmentManager.findFragmentByTag(tag)
+        if (!targetFragment.isAdded()
+                && !getSupportFragmentManager().getFragments().contains(targetFragment)) {
             if (null != currentFragment) {
                 transaction.hide(currentFragment);
             }
             transaction
-                    .add(R.id.home_fragment, targetFragment)
+                    .add(R.id.home_fragment, targetFragment, tag)
                     .commitAllowingStateLoss();
+            getSupportFragmentManager().executePendingTransactions();
         } else {
             transaction
                     .hide(currentFragment)
                     .show(targetFragment)
                     .commitAllowingStateLoss();
+            getSupportFragmentManager().executePendingTransactions();
         }
         currentFragment = targetFragment;
     }

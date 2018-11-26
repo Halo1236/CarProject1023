@@ -141,6 +141,8 @@ public class BtCallRecordsFragment extends BaseFragment<CallRecordsInterface, Bt
             if(!BtSPUtil.getInstance().getAutoSyncBookStateSP(getContext())){
                 Logger.d(TAG, "download: 下载通话记录");
                 startDownload();
+            }else{
+                downloadFailed();
             }
         }
     }

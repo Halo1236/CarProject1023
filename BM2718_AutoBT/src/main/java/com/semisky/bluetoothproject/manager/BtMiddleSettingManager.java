@@ -59,7 +59,7 @@ public class BtMiddleSettingManager {
             setBtConnectionState(AutoConstants.BtConnectionState.STATE_DISCONNECTING);
         } else if (prevState != NfDef.STATE_CONNECTED && newState == NfDef.STATE_CONNECTED) {
             //已连接
-            setBtConnectionState(AutoConstants.BtConnectionState.STATE_CONNECTED);
+//            setBtConnectionState(AutoConstants.BtConnectionState.STATE_CONNECTED);//等全部连接成功再设置
         } else if (prevState == NfDef.STATE_READY && newState == NfDef.STATE_CONNECTING) {
             //连接中
             setBtConnectionState(AutoConstants.BtConnectionState.STATE_CONNECTING);
@@ -114,7 +114,10 @@ public class BtMiddleSettingManager {
         }
     }
 
-    private void setBtConnectionState(int state) {
+    /**
+     * 设置蓝牙图标连接或未连接状态
+     */
+    public void setBtConnectionState(int state) {
         Logger.d(TAG, "setBtConnectionState: " + state);
         autoManager.setBtConnectionState(state);
     }

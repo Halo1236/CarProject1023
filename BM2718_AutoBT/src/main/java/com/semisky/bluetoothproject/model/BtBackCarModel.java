@@ -34,14 +34,13 @@ public class BtBackCarModel {
         IBackModeChanged iBackModeChanged = new IBackModeChanged.Stub() {
             @Override
             public void onBackModeChange(boolean flag) throws RemoteException {
-                //在通话中如果进入倒车，就把声音切换到手机端 7973
-//                if (flag) {
-//                    Logger.d(TAG, "onBackModeChange: 进入倒车");
-//                    notifyObserverEnterBackCar();
-//                } else {
-//                    Logger.d(TAG, "onBackModeChange: 退出倒车");
-//                    notifyObserverQuitBackCar();
-//                }
+                if (flag) {
+                    Logger.d(TAG, "onBackModeChange: 进入倒车");
+                    notifyObserverEnterBackCar();
+                } else {
+                    Logger.d(TAG, "onBackModeChange: 退出倒车");
+                    notifyObserverQuitBackCar();
+                }
             }
         };
 

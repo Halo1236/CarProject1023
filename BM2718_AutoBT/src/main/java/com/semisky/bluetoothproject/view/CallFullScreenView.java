@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.nforetek.bt.aidl.NfHfpClientCall;
 import com.semisky.bluetoothproject.R;
 import com.semisky.bluetoothproject.constant.BtConstant;
+import com.semisky.bluetoothproject.entity.CallNameActive;
 import com.semisky.bluetoothproject.entity.ContactsEntity;
 import com.semisky.bluetoothproject.model.BtStatusModel;
 import com.semisky.bluetoothproject.presenter.BtBaseUiCommandMethod;
@@ -73,7 +74,22 @@ public class CallFullScreenView implements View.OnClickListener {
 
     private boolean isAddView;
 
-    private String firstActiveCallName, secondActiveCallName;
+    private boolean isFirstCall = true;
+
+    /**
+     * 第三方来电
+     */
+    private String secondNumber, secondName;
+
+    /**
+     * 正常来电
+     */
+    private String firstNumber, firstName;
+
+    /**
+     * 当前正在通话的id
+     */
+    private int id;
 
     public CallFullScreenView(Context context) {
         this.mContext = context;
@@ -108,31 +124,48 @@ public class CallFullScreenView implements View.OnClickListener {
         initView();
     }
 
-    public void setCallStatus(BtConstant.CallStatus callStatus) {
-        if (number != null) {
-            this.number = number;
-        }
+    public int getId() {
+        Logger.d(TAG, "getId: " + id);
+        return id;
+    }
+
+    public void setId(int id) {
+        Logger.d(TAG, "setId: " + id);
+        this.id = id;
+    }
+
+    public void setCallStatus(BtConstant.CallStatus callStatus, int id) {
+        String number = mContext.getString(R.string.cx62_bt_unknown);
+        setId(id);
+
         switch (callStatus) {
             case INCOMING:
                 callStatusNow = INCOMING;
+                number = getCallInformation(id);
                 callHandler.sendEmptyMessage(CALLING_INCOMING);
-                sendQueryNameMessage(number);
-                playRing();
+                boolean inBandRingtoneSupport = btBaseUiCommandMethod.isHfpInBandRingtoneSupport();
+                Logger.d(TAG, "inBandRingtoneSupport: " + inBandRingtoneSupport);
+                if (!inBandRingtoneSupport) {
+                    playRing();
+                }
                 checkAutoAnswer();
                 Logger.d(TAG, "setCallStatus: 来电");
                 break;
             case DIALING:
                 callStatusNow = DIALING;
+                getCallInformation(id);
                 callHandler.sendEmptyMessage(CALLING_DIALING);
-                sendQueryNameMessage(number);
                 Logger.d(TAG, "setCallStatus: 去电");
-
                 break;
             case ACTIVE:
                 callStatusNow = ACTIVE;
-                callHandler.sendEmptyMessage(CALLING_ACTIVE);
+                getCallInformation(id);
+                if (isFirstCall) {
+                    callHandler.sendEmptyMessage(CALLING_ACTIVE);
+                    isFirstCall = false;
+                }
                 stopRing();
-                Logger.d(TAG, "setCallStatus: 接通");
+                Logger.d(TAG, "setCallStatus: 接通 " + id);
                 break;
             case TERMINATED:
                 callStatusNow = TERMINATED;
@@ -140,7 +173,7 @@ public class CallFullScreenView implements View.OnClickListener {
                 callHandler.sendEmptyMessage(RECOVER_STATUS);
                 stopRing();
                 Logger.d(TAG, "setCallStatus: 挂断");
-                break;
+                isFirstCall = true;
             case WAITING:
                 callStatusNow = ACTIVE;
 
@@ -148,16 +181,27 @@ public class CallFullScreenView implements View.OnClickListener {
         }
     }
 
-    private void sendQueryNameMessage(String number) {
-        Message message = new Message();
-        message.what = QUERY_NAME_FOR_DATABASE;
-        Bundle bundle = new Bundle();
-        bundle.putString("number", number);
-        message.setData(bundle);
-        callHandler.sendMessage(message);
+    private String getCallInformation(int id) {
+        if (id == 2) {
+            CallNameActive secondCallInformation = btStatusModel.getSecondCallInformation();
+            secondName = secondCallInformation.getName();
+            secondNumber = secondCallInformation.getNumber();
+            callHandler.sendEmptyMessage(CALLING_WAITING);
+            Logger.d(TAG, "getCallInformation: 接通第三方 firstName " + secondName + " secondNumber " + secondNumber);
+            return secondNumber;
+        } else if (id == 1) {
+            CallNameActive firstCallInformation = btStatusModel.getFirstCallInformation();
+            firstName = firstCallInformation.getName();
+            firstNumber = firstCallInformation.getNumber();
+            callHandler.sendEmptyMessage(CALLING_HOLD);
+            Logger.d(TAG, "getCallInformation: 接通第一方 firstName " + firstName + " secondNumber " + firstNumber);
+            return firstNumber;
+        }
+
+        return "";
     }
 
-    public void stopRing() {
+    private void stopRing() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 try {
@@ -228,6 +272,8 @@ public class CallFullScreenView implements View.OnClickListener {
     private static final int QUERY_NAME_FOR_STATUS = 8;
     private static final int RECOVER_STATUS = 9;
     private static final int AUTO_ANSWER = 10;
+    private static final int CALLING_WAITING = 11;
+    private static final int CALLING_HOLD = 12;
 
     private static class CallViewHandler extends Handler {
         WeakReference<CallFullScreenView> mReference;
@@ -260,13 +306,11 @@ public class CallFullScreenView implements View.OnClickListener {
                     break;
                 case CALLING_INCOMING:
                     callView.addView();
-                    callView.tvScreenNumber.setText(callView.number);
                     callView.tvScreenState.setText(callView.mContext.getString(R.string.cx62_bt_calling_state_incoming));
                     callView.initIncomingClickListener();
                     break;
                 case CALLING_DIALING:
                     callView.addView();
-                    callView.tvScreenNumber.setText(callView.number);
                     callView.tvScreenState.setText(callView.mContext.getString(R.string.cx62_bt_calling_state_dialing));
                     callView.initDialingClickListener();
                     break;
@@ -292,6 +336,16 @@ public class CallFullScreenView implements View.OnClickListener {
 
                 case RECOVER_STATUS:
                     callView.recoverStatus();
+                    break;
+
+                case CALLING_HOLD:
+                    callView.tvScreenName.setText(callView.firstName);
+                    callView.tvScreenNumber.setText(callView.firstNumber);
+                    break;
+
+                case CALLING_WAITING:
+                    callView.tvScreenName.setText(callView.secondName);
+                    callView.tvScreenNumber.setText(callView.secondNumber);
                     break;
 
                 case AUTO_ANSWER:

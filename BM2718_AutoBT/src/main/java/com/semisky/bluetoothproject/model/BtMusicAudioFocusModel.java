@@ -99,17 +99,18 @@ public class BtMusicAudioFocusModel {
      */
     public void applyAudioFocus() {
         Log.d(TAG, "applyAudioFocus ：hasAudioFocus: " + hasAudioFocus);
-        initPlaySetting();
         if (!isHasAudioFocus()) {
             hasAudioFocus = requestFocus();//申请音频焦点
+            initPlaySetting();
 //            BtMiddleSettingManager.getInstance().setAppStatusInRequested();
         }
+        btBaseUiCommandMethod.muteA2dpRender(false);
         BtKeyModel.getInstance().setMusicKeyCode(true);
         informAutoAudioFocusRequest();//通知申请音频流成功
         Log.d(TAG, "applyAudioFocus ：hasAudioFocus " + hasAudioFocus);
     }
 
-    public void abandonAudioFocus() {
+    private void abandonAudioFocus() {
         if (isHasAudioFocus()) {
 //        BtMiddleSettingManager.getInstance().setAppStatusInAbandon();
             hasAudioFocus = !abandonFocus();// 注销音频焦点
@@ -148,6 +149,7 @@ public class BtMusicAudioFocusModel {
                         Log.d(TAG, "AUDIOFOCUS_LOSS_TRANSIENT" + focusChange);
                         informLossTransient();
                         closeMusicStreamVolume();
+                        btBaseUiCommandMethod.muteA2dpRender(true);
                         BtKeyModel.getInstance().setMusicKeyCode(false);//不响应方控
                         isMusicFocus = false;
                         break;
@@ -246,7 +248,6 @@ public class BtMusicAudioFocusModel {
     private void openMusicStreamVolume() {
         Logger.d(TAG, "openMusicStreamVolume: ");
         audioManager.openStreamVolume(STREAM_BT_MUSIC);
-        btBaseUiCommandMethod.muteA2dpRender(false);
     }
 
     private void closeMusicStreamVolume() {

@@ -52,19 +52,19 @@ public class BtDeviceSearchModel implements BtDeviceSearchResponse {
         if (disposableObserver != null) {
             if (newState == NfDef.BT_STATE_ON) {
                 //蓝牙已开启
-                Logger.d(TAG, "onAdapterStateChanged:BT_STATE_ON ");
+                Logger.d(TAG, "onAdapterStateChanged:蓝牙已开启 ");
                 disposableObserver.btStatusOpen();
             } else if (newState == NfDef.BT_STATE_OFF) {
                 //蓝牙已关闭
-                Logger.d(TAG, "onAdapterStateChanged:BT_STATE_OFF ");
+                Logger.d(TAG, "onAdapterStateChanged:蓝牙已关闭 ");
                 disposableObserver.btStatusClose();
             } else if (newState == NfDef.BT_STATE_TURNING_ON) {
                 //正在开启蓝牙
-                Logger.d(TAG, "onAdapterStateChanged:BT_STATE_TURNING_ON ");
+                Logger.d(TAG, "onAdapterStateChanged:正在开启蓝牙 ");
                 disposableObserver.btStatusOpening();
             } else if (newState == NfDef.BT_STATE_TURNING_OFF) {
                 //正在关闭蓝牙
-                Logger.d(TAG, "onAdapterStateChanged:BT_STATE_TURNING_OFF ");
+                Logger.d(TAG, "onAdapterStateChanged:正在关闭蓝牙 ");
                 disposableObserver.btStatusClosing();
             }
         }

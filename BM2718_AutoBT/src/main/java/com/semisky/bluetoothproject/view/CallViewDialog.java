@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,20 +130,6 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    private static final int CALLING_TERMINATED = 0;
-    private static final int CALLING_ACTIVE = 1;
-    private static final int DIALOG_DISMISS = 2;
-    private static final int CALLING_INCOMING = 4;
-    private static final int CALLING_BT_TERMINATED = 5;
-    private static final int CALLING_DIALING = 6;
-
-    private static final int CALLING_HOLD = 7;
-    private static final int CALLING_WAITING = 11;
-    private static final int QUERY_NAME_FOR_STATUS = 8;
-    private static final int RECOVER_STATUS = 9;
-    private static final int AUTO_ANSWER = 10;
-    private static final int REFRESH_HFP_AUDIO_STATUS = 12;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -162,7 +147,7 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
                 break;
             case R.id.ibActiveMute:
                 boolean hfpMicMute = btBaseUiCommandMethod.isHfpMicMute();
-                Log.d(TAG, "muteHfpMic:hfpMicMute " + hfpMicMute);
+                Logger.d(TAG, "muteHfpMic:hfpMicMute " + hfpMicMute);
                 if (hfpMicMute) {
                     btBaseUiCommandMethod.muteHfpMic(false);
                     ibActiveMute.setImageResource(R.drawable.icon_call_mic);
@@ -226,6 +211,30 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
         return true;
     }
 
+    public void setHide() {
+        callHandler.sendEmptyMessage(DIALOG_HIDE);
+    }
+
+    public void setShow() {
+        callHandler.sendEmptyMessage(DIALOG_SHOW);
+    }
+
+    private static final int CALLING_TERMINATED = 0;
+    private static final int CALLING_ACTIVE = 1;
+    private static final int DIALOG_DISMISS = 2;
+    private static final int CALLING_INCOMING = 4;
+    private static final int CALLING_BT_TERMINATED = 5;
+    private static final int CALLING_DIALING = 6;
+
+    private static final int CALLING_HOLD = 7;
+    private static final int CALLING_WAITING = 11;
+    private static final int QUERY_NAME_FOR_STATUS = 8;
+    private static final int RECOVER_STATUS = 9;
+    private static final int AUTO_ANSWER = 10;
+    private static final int REFRESH_HFP_AUDIO_STATUS = 12;
+    private static final int DIALOG_HIDE = 13;
+    private static final int DIALOG_SHOW = 14;
+
     private static class CallHandler extends Handler {
         WeakReference<CallViewDialog> mReference;
 
@@ -246,7 +255,7 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
                         dialogView.stopCallTime();
                         dialogView.tvCallStatus.setText(dialogView.mContext.getString(R.string.cx62_bt_calling_state_over));
                         dialogView.setTextColor();
-                        dialogView.callHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                        dialogView.callHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 0);
                     }
                     break;
                 case CALLING_BT_TERMINATED:
@@ -260,10 +269,6 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
                         dialogView.show();
                     }
                     dialogView.setChronometerView();
-                    if (dialogView.firstName.equals("")) {
-                        dialogView.tvCallName.setText(dialogView.firstName);
-                    }
-                    dialogView.tvCallNumber.setText(dialogView.firstNumber);
                     dialogView.tvCallStatus.setText(dialogView.mContext.getString(R.string.cx62_bt_calling_state_incoming));
                     dialogView.frameLayout.removeAllViews();
                     dialogView.frameLayout.addView(LayoutInflater.from(dialogView.mContext).inflate(R.layout.call_incoming_btn_view, null));
@@ -271,11 +276,10 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
                     break;
                 case CALLING_DIALING:
                     if (!dialogView.isShowing()) {
+                        Logger.d(TAG, "handleMessage:CALLING_DIALING show");
                         dialogView.show();
                     }
                     dialogView.setChronometerView();
-                    dialogView.tvCallName.setText(dialogView.firstName);
-                    dialogView.tvCallNumber.setText(dialogView.firstNumber);
                     dialogView.tvCallStatus.setText(dialogView.mContext.getString(R.string.cx62_bt_calling_state_dialing));
                     dialogView.frameLayout.removeAllViews();
                     dialogView.frameLayout.addView(LayoutInflater.from(dialogView.mContext).inflate(R.layout.call_dialing_btn_view, null));
@@ -331,6 +335,14 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
                             dialogView.ibActiveAudioStream.setImageResource(R.drawable.icon_call_car);
                         }
                     }
+                    break;
+
+                case DIALOG_HIDE:
+                    dialogView.dismiss();
+                    break;
+
+                case DIALOG_SHOW:
+                    dialogView.show();
                     break;
             }
         }
@@ -392,7 +404,7 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
         gvCallKeyboard.setAdapter(new KeyboardGradViewAdapter(getContext(), BtConstant.ArrayList.keyboardData));
 
         boolean hfpMicMute = btBaseUiCommandMethod.isHfpMicMute();
-        Log.d(TAG, "initActiveClickListener: " + hfpMicMute);
+        Logger.d(TAG, "initActiveClickListener: " + hfpMicMute);
         if (hfpMicMute) {
             ibActiveMute.setImageResource(R.drawable.icon_call_mic_mute);
         } else {
@@ -400,10 +412,10 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
         }
 
         int hfpAudioConnectionState = btBaseUiCommandMethod.getHfpAudioConnectionState();
-        if (hfpAudioConnectionState == NfDef.STATE_CONNECTED) {//车机接通
+        if (hfpAudioConnectionState == NfDef.STATE_CONNECTED) {//车机接通 140
             ibActiveAudioStream.setImageResource(R.drawable.icon_call_car);
             btBaseUiCommandMethod.reqHfpAudioTransferToCarkit();
-        } else if (hfpAudioConnectionState == NfDef.STATE_READY) {//手机接通
+        } else if (hfpAudioConnectionState == NfDef.STATE_READY) {//手机接通 110
             btBaseUiCommandMethod.reqHfpAudioTransferToPhone();
             ibActiveAudioStream.setImageResource(R.drawable.icon_call_phone);
         }
@@ -427,7 +439,7 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
 
     private void startCallTime(Bundle data) {
         long baseTime = data.getLong("baseTime");
-        Log.d(TAG, "startCallTime: " + baseTime);
+        Logger.d(TAG, "startCallTime: " + baseTime);
         if (baseTime == 0) {
             chronometer.setBase(SystemClock.elapsedRealtime());//计时器清零
         } else {
@@ -442,7 +454,8 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
     }
 
     public void setCallStatus(BtConstant.CallStatus callStatus, int id) {
-        Log.d(TAG, "setCallStatus: 调用方法 " + callStatus.name());
+        Logger.d(TAG, "setCallStatus: 调用方法 " + callStatus.name());
+        Logger.d(TAG, "setCallStatus: id " + id);
         String number = mContext.getString(R.string.cx62_bt_unknown);
 
         switch (callStatus) {
@@ -487,18 +500,18 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
 
     private String getCallInformation(int id) {
         if (id == 2) {
-            Logger.d(TAG, "getCallInformation: 接通第三方");
             CallNameActive secondCallInformation = btStatusModel.getSecondCallInformation();
             secondName = secondCallInformation.getName();
             secondNumber = secondCallInformation.getNumber();
             callHandler.sendEmptyMessage(CALLING_WAITING);
+            Logger.d(TAG, "getCallInformation: 接通第三方 firstName " + secondName + " secondNumber " + secondNumber);
             return secondNumber;
         } else if (id == 1) {
-            Logger.d(TAG, "getCallInformation: 接通第一方");
             CallNameActive firstCallInformation = btStatusModel.getFirstCallInformation();
             firstName = firstCallInformation.getName();
             firstNumber = firstCallInformation.getNumber();
             callHandler.sendEmptyMessage(CALLING_HOLD);
+            Logger.d(TAG, "getCallInformation: 接通第一方 firstName " + firstName + " secondNumber " + firstNumber);
             return firstNumber;
         }
 
@@ -508,14 +521,26 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
     @Override
     public void dismiss() {
         super.dismiss();
-        Log.d(TAG, "dismiss: ");
+        Logger.d(TAG, "dismiss: ");
         isFirstCall = true;
     }
 
-    public void switchCallView(long chronometerBase) {
+    public void switchCallView(long chronometerBase, int id) {
+        Logger.d(TAG, "switchCallView: id " + id);
         callStatusNow = ACTIVE;
         sendChronometerBaseMessage(chronometerBase);
         stopRing();
+        if (id == 1) {
+            CallNameActive firstCallInformation = btStatusModel.getFirstCallInformation();
+            firstName = firstCallInformation.getName();
+            firstNumber = firstCallInformation.getNumber();
+            callHandler.sendEmptyMessage(CALLING_HOLD);
+        } else if (id == 2) {
+            CallNameActive secondCallInformation = btStatusModel.getSecondCallInformation();
+            secondName = secondCallInformation.getName();
+            secondNumber = secondCallInformation.getNumber();
+            callHandler.sendEmptyMessage(CALLING_WAITING);
+        }
         Logger.d(TAG, "switchCallView: 接通");
     }
 
@@ -560,7 +585,7 @@ public class CallViewDialog extends Dialog implements View.OnClickListener, Adap
      */
     private void checkAutoAnswer() {
         boolean autoAnswerStateSP = BtSPUtil.getInstance().getAutoAnswerStateSP(mContext);
-        Log.d(TAG, "checkAutoAnswer: " + autoAnswerStateSP);
+        Logger.d(TAG, "checkAutoAnswer: " + autoAnswerStateSP);
         if (autoAnswerStateSP && callStatusNow == INCOMING) {
             callHandler.sendEmptyMessageDelayed(AUTO_ANSWER, 5000);
         }

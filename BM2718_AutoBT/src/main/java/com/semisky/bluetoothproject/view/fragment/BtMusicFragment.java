@@ -8,8 +8,11 @@ import android.widget.TextView;
 import com.semisky.bluetoothproject.R;
 import com.semisky.bluetoothproject.entity.MusicSongStatus;
 import com.semisky.bluetoothproject.manager.BtMiddleSettingManager;
+import com.semisky.bluetoothproject.model.BtMusicAudioFocusModel;
+import com.semisky.bluetoothproject.model.BtStatusModel;
 import com.semisky.bluetoothproject.presenter.BtMusicPresenter;
 import com.semisky.bluetoothproject.presenter.viewInterface.BtMusicPlayStatusInterface;
+import com.semisky.bluetoothproject.utils.Logger;
 
 /**
  * Created by chenhongrui on 2018/8/1
@@ -22,7 +25,7 @@ import com.semisky.bluetoothproject.presenter.viewInterface.BtMusicPlayStatusInt
 public class BtMusicFragment extends BaseFragment<BtMusicPlayStatusInterface, BtMusicPresenter>
         implements BtMusicPlayStatusInterface, View.OnClickListener {
 
-    private static final String TAG = "BtMusicFragment";
+    private static final String TAG = Logger.makeTagLog(BtMusicFragment.class);
 
     private TextView tvSongName;
     private TextView tvSongAlbum;
@@ -51,13 +54,11 @@ public class BtMusicFragment extends BaseFragment<BtMusicPlayStatusInterface, Bt
     protected void fragmentShow() {
         Log.d(TAG, "fragmentShow: ");
         BtMiddleSettingManager.getInstance().setAppStatusInForeground(getString(R.string.bt_music_fragment));
-        initMusicData();
     }
 
     @Override
     protected void loadData() {
         Log.d(TAG, "loadData: ");
-        initMusicData();
     }
 
     @Override
@@ -127,8 +128,8 @@ public class BtMusicFragment extends BaseFragment<BtMusicPlayStatusInterface, Bt
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ibMusicPlay.setVisibility(View.VISIBLE);
-                ibMusicPause.setVisibility(View.INVISIBLE);
+                ibMusicPlay.setVisibility(View.INVISIBLE);
+                ibMusicPause.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -136,7 +137,26 @@ public class BtMusicFragment extends BaseFragment<BtMusicPlayStatusInterface, Bt
     public void initMusicData() {
         mPresenter.initListener();
         mPresenter.reqAvrcp13GetElementAttributesPlaying();
-        mPresenter.reqAvrcp13GetPlayStatus();
+//        mPresenter.reqAvrcp13GetPlayStatus();
+        checkPlay();
+    }
+
+    /**
+     * 判断是否需要播放
+     * 用于替代reqAvrcp13GetPlayStatus方法
+     */
+    private void checkPlay() {
+        //如果false 说明是刚刚进入蓝牙，所以播放
+        boolean hasAudioFocus = BtMusicAudioFocusModel.getINSTANCE().isHasAudioFocus();
+        boolean playMusic = BtStatusModel.getInstance().isPlayMusic();
+        Logger.d(TAG, "checkPlay: hasAudioFocus " + hasAudioFocus + " playMusic " + playMusic);
+        if (!hasAudioFocus || BtStatusModel.getInstance().isPlayMusic()) {
+            mPresenter.playSong();
+            startPlay();
+        } else {
+            pausePlay();
+        }
+
     }
 
     @Override

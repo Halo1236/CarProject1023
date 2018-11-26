@@ -68,7 +68,8 @@ public class BtReceiverInteractive extends BroadcastReceiver {
                        String str) throws Exception {
         try {
             Method setPinMethod = btClass.getDeclaredMethod("setPin", new Class[]{byte[].class});
-            Boolean returnValue = (Boolean) setPinMethod.invoke(btDevice, new Object[]{str.getBytes()});
+            Boolean returnValue = (Boolean) setPinMethod.invoke(btDevice,
+                    new Object[]{str.getBytes()});
             Logger.e("returnValue", "" + returnValue);
         } catch (Exception e) {
             e.printStackTrace();

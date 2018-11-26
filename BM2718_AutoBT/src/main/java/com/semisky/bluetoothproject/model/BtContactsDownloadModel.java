@@ -23,7 +23,6 @@ import org.litepal.crud.callback.UpdateOrDeleteCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -70,7 +69,10 @@ public class BtContactsDownloadModel implements BtDownloadResponse {
         this.contactsInterface = contactsInterface;
         if(null != contactsInterface && !contactsData.isEmpty()){
             Logger.d(TAG, "contactsData: "+contactsData.size());
-            if(btStatusModel.getSyncForStatus() != BtStatusModel.syncStatus.PERMISSION){
+            if(btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.ALL_IN_CONTACT
+                    || btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.CONTACT
+                    || btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.CONTACT_LOADING_WAIT_RECORD
+                    ){
                 contactsInterface.onDownloading(contactsData);
             }
         }
@@ -94,7 +96,10 @@ public class BtContactsDownloadModel implements BtDownloadResponse {
         this.callRecordsInterface = callRecordsInterface;
         if(null != callRecordsInterface && !callLogData.isEmpty()){
             Logger.d(TAG, "callLogData: "+callLogData.size());
-            if(btStatusModel.getSyncForStatus() != BtStatusModel.syncStatus.PERMISSION){
+            if(btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.ALL_IN_RECORD
+                    || btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.RECORD
+                    || btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.RECORD_LOADING_WAIT_CONTACT
+                    ){
                 callRecordsInterface.downloading(callLogData);
             }
 
@@ -118,13 +123,25 @@ public class BtContactsDownloadModel implements BtDownloadResponse {
                 + " reason " + reason+ " counts " + counts);
         if((reason == NfDef.REASON_DOWNLOAD_FULL_CONTENT_COMPLETED || reason == NfDef.REASON_DOWNLOAD_USER_REJECT)
                 && counts == 0){
+            Logger.d(TAG, "onPbapStateChanged:getSyncForStatus "+btStatusModel.getSyncForStatus());
             switch(btStatusModel.getSyncForStatus()){
-                case CONTACT:
                 case ALL_IN_CONTACT:
+                    if (contactsInterface != null) {
+                        btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.NULL);
+                        contactsInterface.onDownloadFailed();
+
+                    }
+                    if (btContactAndRecordInterface != null) {
+                        Logger.d(TAG, "onPbapStateChanged: 联系人同步失败 ");
+                        btContactAndRecordInterface.callAllForContactCompleted();
+                    }
+                    break;
+                case CONTACT:
                 case CONTACT_LOADING_WAIT_RECORD:
                     if (contactsInterface != null) {
                         btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.NULL);
                         contactsInterface.onDownloadFailed();
+
                     }
                     break;
 
@@ -134,6 +151,18 @@ public class BtContactsDownloadModel implements BtDownloadResponse {
                     if (callRecordsInterface != null) {
                         btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.NULL);
                         callRecordsInterface.downloadFailed();
+                    }
+                    break;
+
+                case PERMISSION:
+                    if (callRecordsInterface != null) {
+                        btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.NULL);
+                        callRecordsInterface.downloadFailed();
+                    }
+                    if (contactsInterface != null) {
+                        btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.NULL);
+                        contactsInterface.onDownloadFailed();
+
                     }
                     break;
             }
@@ -413,8 +442,8 @@ public class BtContactsDownloadModel implements BtDownloadResponse {
 
     @Override
     public void retPbapDownloadedCallLog(String address, String firstName, String middleName, String lastName, String number, int type, String timestamp) {
-//        Logger.d(TAG, "下载到通话记录" + firstName + middleName + lastName + ", number = " +
-//                number + ",  timeStamp" + timestamp + ", type =" + type);
+        Logger.d(TAG, "下载到通话记录" + firstName + middleName + lastName + ", number = " +
+                number + ",  timeStamp" + timestamp + ", type =" + type);
         CallLogEntity callLogEntity = new CallLogEntity(address, firstName, middleName, lastName, number, timestamp);
 
         switch (type) {
@@ -436,7 +465,7 @@ public class BtContactsDownloadModel implements BtDownloadResponse {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", BtStatusModel.getInstance().getLocalStats());
         String timeStamp = callLogEntity.getTimestamp();
         String[] dt = timeStamp.split("T");
-        if (dt.length > 0) {
+        if (dt.length > 1) {
             Date callDate = DateUtils.stringToDate(dt[0], "yyyyMMdd");
             if (callDate != null) {
                 //是否是当天日期

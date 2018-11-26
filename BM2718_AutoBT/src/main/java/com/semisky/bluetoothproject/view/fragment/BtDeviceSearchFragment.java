@@ -17,7 +17,6 @@ import com.semisky.bluetoothproject.adapter.DeviceListItemAdapter;
 import com.semisky.bluetoothproject.entity.DevicesListEntity;
 import com.semisky.bluetoothproject.manager.BtMiddleSettingManager;
 import com.semisky.bluetoothproject.model.BtBackCarModel;
-import com.semisky.bluetoothproject.model.BtHfpModel;
 import com.semisky.bluetoothproject.model.BtKeyModel;
 import com.semisky.bluetoothproject.model.modelInterface.OnBackCarStateChangeListener;
 import com.semisky.bluetoothproject.presenter.BtDeviceSearchPresenter;
@@ -32,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static android.util.Log.d;
 
@@ -70,6 +70,11 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
      */
     private boolean isConnectDevice;
 
+    /**
+     * 蓝牙是否打开
+     */
+    private boolean isBtOpen;
+
     @Override
     protected BtDeviceSearchPresenter createPresenter() {
         return new BtDeviceSearchPresenter();
@@ -93,6 +98,14 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
 
         BtOpenSwitch = view.findViewById(R.id.BtOpenSwitch);
         BtOpenSwitch.setOnCheckedChangeListener(this);
+
+        Locale locale = getResources().getConfiguration().locale;
+        String language = locale.getLanguage();
+        if (language.contains("zh")) {
+            BtOpenSwitch.setTrackResource(R.drawable.btn_set_switch_selector);
+        } else {
+            BtOpenSwitch.setTrackResource(R.drawable.btn_eng_set_switch_selector);
+        }
 
         deviceListItemAdapter = new DeviceListItemAdapter(mContent,
                 R.layout.item_device_list_view, searchDevicesData);
@@ -166,6 +179,9 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
     private final static int SHOW_DEVICE_FOUND = 0x04;
     private final static int ONCE_DEVICE_FOUND = 0x05;
     private final static int SET_FLAG = 0x06;
+    private final static int SHOW_PAIRED_DEVICES = 0x07;
+    private final static int LOAD_PAIRED_DEVICES = 0x08;
+    private final static int AUTO_LOAD_DEVICE_FOUND = 0x09;
 
     public Handler deviceHandler = new Handler(new Handler.Callback() {
         @Override
@@ -185,9 +201,7 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
                     break;
                 case DEVICE_FOUND:
                     if (isSearchDevice) {
-                        searchDevicesData.addAll(cacheDevicesData);
-                        cacheDevicesData.clear();
-                        deviceListItemAdapter.setList(searchDevicesData);
+                        notifyListData();
                     }
                     break;
                 case SHOW_DEVICE_FOUND:
@@ -201,10 +215,60 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
                 case SET_FLAG:
                     isSearchDevice = false;
                     break;
+
+                case SHOW_PAIRED_DEVICES:
+                    deviceListItemAdapter.setList(searchDevicesData);
+                    break;
+
+                case LOAD_PAIRED_DEVICES:
+                    pairedDevicesData = BtSPUtil.getInstance().getPairedDevicesData(getContext());
+                    Logger.d(TAG, "onAdapterDiscoveryFinished: pairedDevicesData size " + pairedDevicesData.size());
+                    if (pairedDevicesData.size() > 0) {
+                        for (int i = 0; i < pairedDevicesData.size(); i++) {
+                            searchDevicesData.addFirst(pairedDevicesData.get(i));
+                        }
+                    }
+
+                    //可能会返回多个设备 根据address去重
+                    cleanRepeatForList();
+
+                    //按时间戳排序
+                    pairedDevicesDataSort();
+
+                    if (searchDevicesData.size() > 0) {
+                        showDeviceFound();
+                        notifyListData();
+                    } else {
+                        onceDeviceFound();
+                    }
+
+                    dismissDialog();
+                    isSearchDevice = false;
+                    break;
+
+                case AUTO_LOAD_DEVICE_FOUND:
+                    notifyListData();
+                    break;
             }
             return false;
         }
     });
+
+    private void notifyListData() {
+        searchDevicesData.addAll(cacheDevicesData);
+        cacheDevicesData.clear();
+        deviceListItemAdapter.setList(searchDevicesData);
+    }
+
+    private void showDeviceFound() {
+        deviceList.setVisibility(View.VISIBLE);
+        rlNoneDevices.setVisibility(View.GONE);
+    }
+
+    private void onceDeviceFound() {
+        deviceList.setVisibility(View.GONE);
+        rlNoneDevices.setVisibility(View.VISIBLE);
+    }
 
     private void showSettingView(boolean status) {
         final MainActivity mainActivity = (MainActivity) getActivity();
@@ -228,14 +292,13 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
     }
 
     protected void fragmentHide() {
-        mPresenter.unregisterListener();
+
     }
 
     protected void fragmentShow() {
         Logger.d(TAG, "fragmentShow: ");
         mPresenter.initListener();
         BtMiddleSettingManager.getInstance().setAppStatusInForeground(getString(R.string.bt_connect_fragment));
-        getPairedDevices();
     }
 
     @Override
@@ -265,6 +328,8 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.d(TAG, "onDestroy: ");
+        dismissDialog();
     }
 
     private void initKeyListener() {
@@ -333,19 +398,21 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initCancelButtonView(getString(R.string.cx62_bt_search_start),
-                            new BtMessageDialog.ClickCancelListener() {
-                                @Override
-                                public void clickCancel() {
-                                    btMessageDialog.dismiss();
-                                }
-                            }, new BtMessageDialog.DialogDisMissListener() {
-                                @Override
-                                public void dialogDisMissCallback(DialogInterface dialog) {
-                                    mPresenter.cancelBtDiscovery();
-                                }
-                            });
-                    btMessageDialog.show();
+                    if (isAdded()) {
+                        btMessageDialog.initCancelButtonView(getString(R.string.cx62_bt_search_start),
+                                new BtMessageDialog.ClickCancelListener() {
+                                    @Override
+                                    public void clickCancel() {
+                                        btMessageDialog.dismiss();
+                                    }
+                                }, new BtMessageDialog.DialogDisMissListener() {
+                                    @Override
+                                    public void dialogDisMissCallback(DialogInterface dialog) {
+                                        mPresenter.cancelBtDiscovery();
+                                    }
+                                });
+                        btMessageDialog.show();
+                    }
                 }
             });
         }
@@ -355,32 +422,8 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
     public void onAdapterDiscoveryFinished() {
         if (isSearchDevice) {
             Logger.d(TAG, "onAdapterDiscoveryFinished: ");
-            pairedDevicesData = BtSPUtil.getInstance().getPairedDevicesData(getContext());
-
-            Logger.d(TAG, "onAdapterDiscoveryFinished: pairedDevicesData size " + pairedDevicesData.size());
-
-            if (pairedDevicesData.size() > 0) {
-                for (int i = 0; i < pairedDevicesData.size(); i++) {
-                    searchDevicesData.addFirst(pairedDevicesData.get(i));
-                }
-            }
-
-            //可能会返回多个设备 根据address去重
-            cleanRepeatForList();
-
-            //按时间戳排序
-            pairedDevicesDataSort();
-
-            if (searchDevicesData.size() > 0) {
-                deviceHandler.sendEmptyMessage(SHOW_DEVICE_FOUND);
-                deviceHandler.sendEmptyMessage(DEVICE_FOUND);
-            } else {
-                deviceHandler.sendEmptyMessage(ONCE_DEVICE_FOUND);
-            }
-
-            dismissDialog();
-
-            deviceHandler.sendEmptyMessage(SET_FLAG);
+            deviceHandler.removeMessages(LOAD_PAIRED_DEVICES);
+            deviceHandler.sendEmptyMessage(LOAD_PAIRED_DEVICES);
         }
     }
 
@@ -418,15 +461,24 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
 
     @Override
     public void onDeviceFound(String address, String name, byte category) {
-        Logger.d(TAG, "onDeviceFound: " + name);
-        cacheDevicesData.add(new DevicesListEntity(address, name, DevicesListEntity.DeviceConnectStatus.NOT_CONNECT, 1));
-
+        Logger.d(TAG, "onDeviceFound: " + name + " cacheDevicesData " + cacheDevicesData.size());
         if (cacheDevicesData.size() > 0) {
+            for (DevicesListEntity devicesListEntity : cacheDevicesData) {
+                if (!address.equals(devicesListEntity.getAddress())) {
+                    cacheDevicesData.add(new DevicesListEntity(address, name, DevicesListEntity.DeviceConnectStatus.NOT_CONNECT, 1));
+                }
+            }
+        } else {
+            cacheDevicesData.add(new DevicesListEntity(address, name, DevicesListEntity.DeviceConnectStatus.NOT_CONNECT, 1));
+        }
+
+        if (cacheDevicesData.size() == 1) {
             deviceHandler.sendEmptyMessage(SHOW_DEVICE_FOUND);
-            deviceHandler.sendEmptyMessage(DEVICE_FOUND);
         } else {
             deviceHandler.sendEmptyMessage(ONCE_DEVICE_FOUND);
         }
+
+        deviceHandler.sendEmptyMessage(AUTO_LOAD_DEVICE_FOUND);
     }
 
     @Override
@@ -447,22 +499,26 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_connect_success));
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(1500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                    if (isAdded()) {
+                        btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_connect_success));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(1500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                btMessageDialog.dismiss();
                             }
-                            btMessageDialog.dismiss();
-                        }
-                    }).start();
+                        }).start();
+                    }
                 }
             });
         }
+
         refreshMainView();
+        mPresenter.unregisterListener();
     }
 
     @Override
@@ -473,17 +529,19 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initOnlyMessageDialog(getString(R.string.cx62_bt_dialog_connecting)
-                            , new BtMessageDialog.DialogDisMissListener() {
-                                @Override
-                                public void dialogDisMissCallback(DialogInterface dialog) {
-                                    if (isConnectDevice) {
-                                        mPresenter.reqBtDisconnectAll();
-                                        BtHfpModel.getInstance().removeCallBackRunnable();
+                    if (isAdded()) {
+                        btMessageDialog.initOnlyMessageDialog(getString(R.string.cx62_bt_dialog_connecting)
+                                , new BtMessageDialog.DialogDisMissListener() {
+                                    @Override
+                                    public void dialogDisMissCallback(DialogInterface dialog) {
+//                                    if (isConnectDevice) { 只有在ACC OFF才断开
+//                                        mPresenter.reqBtDisconnectAll();
+//                                        BtHfpModel.getInstance().removeCallBackRunnable();
+//                                    }
                                     }
-                                }
-                            });
-                    btMessageDialog.show();
+                                });
+                        btMessageDialog.show();
+                    }
                 }
             });
         }
@@ -496,18 +554,20 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_connect_fail));
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(2000);
-                                btMessageDialog.dismiss();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                    if (isAdded()) {
+                        btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_connect_fail));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(2000);
+                                    btMessageDialog.dismiss();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }).start();
+                        }).start();
+                    }
                 }
             });
         }
@@ -516,10 +576,11 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
     @Override
     public void isBtConnect(boolean status) {
         Logger.d(TAG, "isBtConnect: " + status);
+        isBtOpen = status;
         BtOpenSwitch.setChecked(status);
         if (status) {
             deviceHandler.sendEmptyMessage(ONCE_DEVICE_FOUND);
-            getPairedDevices();
+            showPairedDevices();
         } else {
             btStatusClose();
         }
@@ -532,36 +593,38 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_bt_open_success));
-                    btMessageDialog.show();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(2000);
-                                btMessageDialog.dismiss();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                    if (isAdded()) {
+                        btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_bt_open_success));
+                        btMessageDialog.show();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(2000);
+                                    btMessageDialog.dismiss();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }).start();
+                        }).start();
+                    }
                 }
             });
         }
 
         deviceHandler.sendEmptyMessage(BT_STATUS_OPEN);
-        getPairedDevices();
+        showPairedDevices();
     }
 
-    private void getPairedDevices() {
+    private void showPairedDevices() {
         pairedDevicesData = BtSPUtil.getInstance().getPairedDevicesData(getContext());
-        Logger.d(TAG, "getPairedDevices: " + pairedDevicesData.size());
+        Logger.d(TAG, "showPairedDevices: " + pairedDevicesData.size());
 
         if (pairedDevicesData.size() > 0) {
+            searchDevicesData.clear();
             searchDevicesData.addAll(pairedDevicesData);
-            cleanRepeatForList();
 
-            deviceHandler.sendEmptyMessage(DEVICE_FOUND);
+            deviceHandler.sendEmptyMessage(SHOW_PAIRED_DEVICES);
             deviceHandler.sendEmptyMessage(SHOW_DEVICE_FOUND);
         } else {
             deviceHandler.sendEmptyMessage(ONCE_DEVICE_FOUND);
@@ -576,8 +639,10 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_bt_opening));
-                    btMessageDialog.show();
+                    if (isAdded()) {
+                        btMessageDialog.initMessageView(getString(R.string.cx62_bt_dialog_bt_opening));
+                        btMessageDialog.show();
+                    }
                 }
             });
         }
@@ -591,15 +656,17 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btMessageDialog.initCancelConfirmButtonView(getString(R.string.cx62_bt_dialog_bt_close_tip),
-                            new BtMessageDialog.ClickConfirmListener() {
-                                @Override
-                                public void clickConfirm() {
-                                    mPresenter.setBtEnable(true);
-                                }
-                            });
+                    if (isAdded()) {
+                        btMessageDialog.initCancelConfirmButtonView(getString(R.string.cx62_bt_dialog_bt_close_tip),
+                                new BtMessageDialog.ClickConfirmListener() {
+                                    @Override
+                                    public void clickConfirm() {
+                                        mPresenter.setBtEnable(true);
+                                    }
+                                });
 
-                    btMessageDialog.show();
+                        btMessageDialog.show();
+                    }
                 }
             });
         }
@@ -629,7 +696,9 @@ public class BtDeviceSearchFragment extends BaseFragment<DeviceSearchInterface, 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            mPresenter.setBtEnable(true);
+            if (!isBtOpen) {
+                mPresenter.setBtEnable(true);
+            }
         } else {
             mPresenter.setBtEnable(false);
             searchDevicesData.clear();

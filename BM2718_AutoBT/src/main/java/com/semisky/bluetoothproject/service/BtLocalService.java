@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.semisky.autoservice.aidl.INaviStatusListener;
 import com.semisky.autoservice.aidl.IPowerModeChanged;
@@ -100,7 +99,7 @@ public class BtLocalService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: ");
+        Logger.d(TAG, "onCreate: ");
         btHfpModel = BtHfpModel.getInstance();
         btDeviceSearchModel = BtDeviceSearchModel.getInstance();
         btContactsDownloadModel = BtContactsDownloadModel.getInstance();
@@ -123,7 +122,7 @@ public class BtLocalService extends Service {
     }
 
     private void initListener() {
-        Log.d(TAG, "initListener: ");
+        Logger.d(TAG, "initListener: ");
         initCallDialogShow();
         initBTHFPListener();
         initContactDownloadListener();
@@ -207,7 +206,7 @@ public class BtLocalService extends Service {
             @Override
             public void callAllForContactCompleted() {
 //                btContactDownloadDialog.dismissContactDialog();
-
+                Logger.d(TAG, "initContactDownloadListener--------------callAllForContactCompleted");
                 //下载联系人成功，开始下载通话记录
                 sendMessageToBTNative(REQ_BT_DOWNLOAD_CALLLOG, null);
                 btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.ALL_IN_RECORD);
@@ -241,7 +240,9 @@ public class BtLocalService extends Service {
                 switch (i) {
                     case AutoConstants.PowerMode.WORKING:
                         Logger.d(TAG, "onPowerModeChange: 连接acc " + btStatusModel.isAccOff());
-                        if (btStatusModel.isAccOff()) {
+                        boolean autoConnStateSP = BtSPUtil.getInstance().getAutoConnStateSP(BtLocalService.this);
+                        Logger.d(TAG, "onPowerModeChange: 是否开启自动连接选项 " + autoConnStateSP);
+                        if (btStatusModel.isAccOff() && autoConnStateSP) {
                             //主动连接
                             String address = BtSPUtil.getInstance().getLastConnectAddressSP(BtLocalService.this);
                             sendMessageToBTNative(REQ_BT_CONNECT_HFP_A2DP, address);
@@ -257,6 +258,7 @@ public class BtLocalService extends Service {
                         //主动断开蓝牙
                         btStatusModel.setAccOff(true);
                         btStatusModel.setAccOnRecoverMusic(true);
+                        sendMessageToBTNative(CANCEL_BT_DISCOVERY, null);
                         sendMessageToBTNative(REQ_BT_SET_BREAK_CONNECT, null);
                         break;
                     case AutoConstants.PowerMode.SHUTDOWN:
@@ -281,9 +283,8 @@ public class BtLocalService extends Service {
 
             @Override
             public void stateConnected(String address) {
-                //连接上蓝牙功能，要求默认静音(不明白这种要求，那打开音频通道的方法还有什么意义)
-                commandMethod.muteA2dpRender(true);
                 //模拟请求权限，如果数据请求成功，说明开启了权限，然后可以进行自动同步功能
+                btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.PERMISSION);
                 sendMessageToBTNative(CHECK_PERMISSION, null);
             }
 
@@ -320,6 +321,8 @@ public class BtLocalService extends Service {
                 //释放音频焦点
 //                BtMusicAudioFocusModel.getINSTANCE().abandonAudioFocus();
 
+                commandMethod.muteA2dpRender(true);
+
                 //通话中断开蓝牙
                 BtPhoneAudioFocusModel.getINSTANCE().abandonAudioFocus();
             }
@@ -335,39 +338,44 @@ public class BtLocalService extends Service {
         OnCallStatusListener listener = new OnCallStatusListener() {
             @Override
             public void callStatusIncomming(int id) {
-                Log.d(TAG, "callStatusIncomming: ");
+                Logger.d(TAG, "callStatusIncomming: ");
                 if (btStatusModel.isNaviView()) {
-                    callFullScreenView.setCallStatus(INCOMING);
+                    callFullScreenView.setCallStatus(INCOMING, id);
                 } else {
                     callViewDialog.setCallStatus(INCOMING, id);
                 }
+
+                checkCarBackStatus();
             }
 
             @Override
             public void callStatusDialing(int id) {
-                Log.d(TAG, "callStatusDialing: ");
+                Logger.d(TAG, "callStatusDialing: ");
                 if (btStatusModel.isNaviView()) {
-                    callFullScreenView.setCallStatus(DIALING);
+                    callFullScreenView.setCallStatus(DIALING, id);
                 } else {
                     callViewDialog.setCallStatus(DIALING, id);
                 }
+                checkCarBackStatus();
             }
 
             @Override
             public void callStatusActive(int id) {
-                Log.d(TAG, "callStatusActive: ");
+                Logger.d(TAG, "callStatusActive: ");
                 if (btStatusModel.isNaviView()) {
-                    callFullScreenView.setCallStatus(ACTIVE);
+                    callFullScreenView.setCallStatus(ACTIVE, id);
                 } else {
                     callViewDialog.setCallStatus(ACTIVE, id);
                 }
+                checkCarBackStatus();
             }
 
             @Override
             public void callStatusTerminated() {
-                Log.d(TAG, "callStatusTerminated: ");
+                Logger.d(TAG, "callStatusTerminated: ");
+                isHideDialog = false;
                 if (btStatusModel.isNaviView()) {
-                    callFullScreenView.setCallStatus(TERMINATED);
+                    callFullScreenView.setCallStatus(TERMINATED, 0);
                 } else {
                     callViewDialog.setCallStatus(TERMINATED, 0);
                 }
@@ -375,7 +383,7 @@ public class BtLocalService extends Service {
 //                        btStatusModel.getSyncForStatus() == BtStatusModel.syncStatus.CONTACT) {
 //                    btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.ONCE_RECORD_CONTACT);
 //                } else {
-                    btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.ONCE_RECORD);
+                btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.ONCE_RECORD);
 //                }
                 sendMessageToBTNative(REQ_BT_ONCE_CALLLOG, null);
             }
@@ -390,20 +398,20 @@ public class BtLocalService extends Service {
             @Override
             public void onNaviStatusChange(int type, boolean isShow) {
                 if (type == AutoConstants.NaviType.DEFAULT_NAVI) {
-                    Log.d(TAG, "onNaviStatusChange: " + isShow);
+                    Logger.d(TAG, "onNaviStatusChange: " + isShow);
                     btStatusModel.setNaviView(isShow);
                     if (!isShow) {
                         switch (btStatusModel.getCallStatus()) {
                             case INCOMING:
-                                callViewDialog.setCallStatus(INCOMING, 0);
+                                callViewDialog.setCallStatus(INCOMING, callFullScreenView.getId());
                                 break;
                             case DIALING:
-                                callViewDialog.setCallStatus(DIALING, 0);
+                                callViewDialog.setCallStatus(DIALING, callFullScreenView.getId());
                                 break;
                             case ACTIVE:
                                 //设置跳转前的时间
                                 long chronometerBase = callFullScreenView.getChronometerBase();
-                                callViewDialog.switchCallView(chronometerBase);
+                                callViewDialog.switchCallView(chronometerBase, callFullScreenView.getId());
                                 break;
                         }
                         callFullScreenView.removeView();
@@ -415,20 +423,47 @@ public class BtLocalService extends Service {
         OnBackCarStateChangeListener onBackCarStateChangeListener = new OnBackCarStateChangeListener() {
             @Override
             public void onBackCarEnter() {
-                if (btStatusModel.isCallPhone()) {
-                    commandMethod.reqHfpAudioTransferToPhone();
+                //在通话中如果进入倒车，就把声音切换到手机端 7973
+//                if (btStatusModel.isCallPhone()) {
+//                    commandMethod.reqHfpAudioTransferToPhone();
+//                }
+                if (callViewDialog.isShowing()) {
+                    callViewDialog.setHide();
+                    isHideDialog = true;
                 }
             }
 
             @Override
             public void onBackCarQuit() {
-                if (btStatusModel.isCallPhone()) {
-                    commandMethod.reqHfpAudioTransferToCarkit();
+//                if (btStatusModel.isCallPhone()) {
+//                    commandMethod.reqHfpAudioTransferToCarkit();
+//                }
+                Logger.d(TAG, "onBackCarQuit:isHideDialog " + isHideDialog);
+                if (isHideDialog) {
+                    callViewDialog.setShow();
+                    isHideDialog = false;
                 }
             }
         };
 
         BtBackCarModel.getInstance().setOnCarStateChangeListener(onBackCarStateChangeListener);
+    }
+
+    /**
+     * 是否因为了倒车隐藏了通话页面
+     */
+    private boolean isHideDialog;
+
+    /**
+     * 如果当前正在倒车，就隐藏通页面
+     */
+    private void checkCarBackStatus() {
+        boolean backMode = AutoManager.getInstance().isBackMode();
+        Logger.d(TAG, "checkCarBackStatus:backMode " + backMode);
+        if (backMode) {
+            callViewDialog.setHide();
+            isHideDialog = true;
+        }
     }
 
     @Override
@@ -576,38 +611,40 @@ public class BtLocalService extends Service {
         boolean autoSyncBookStateSP = BtSPUtil.getInstance().getAutoSyncBookStateSP(this);
 //        boolean newDevices = btStatusModel.isNewDevice();
 //        boolean syncContactAndCallLog = !BtSPUtil.getInstance().isSyncContactAndCallLog(this);
-        Log.d(TAG, "checkAutoSyncContact: autoSyncBookStateSP " + autoSyncBookStateSP);
-//        Log.d(TAG, "checkAutoSyncContact: newDevices " + newDevices);
-//        Log.d(TAG, "checkAutoSyncContact: syncContactAndCallLog " + syncContactAndCallLog);
+        Logger.d(TAG, "checkAutoSyncContact: autoSyncBookStateSP " + autoSyncBookStateSP);
+//        Logger.d(TAG, "checkAutoSyncContact: newDevices " + newDevices);
+//        Logger.d(TAG, "checkAutoSyncContact: syncContactAndCallLog " + syncContactAndCallLog);
         if (autoSyncBookStateSP /*&& newDevices && syncContactAndCallLog*/) {
             btStatusModel.setSyncForStatus(BtStatusModel.syncStatus.ALL_IN_CONTACT);
-            Log.d(TAG, "sendMessageToBTNative:  REQ_BT_DOWNLOAD_CONNECT");
+            Logger.d(TAG, "sendMessageToBTNative:  REQ_BT_DOWNLOAD_CONNECT");
             sendMessageToBTNative(REQ_BT_DOWNLOAD_CONNECT, null);
         }
     }
 
     @Override
     public ComponentName startService(Intent service) {
-        Log.d(TAG, "startService: ");
+        Logger.d(TAG, "startService: ");
         return super.startService(service);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: ");
+        Logger.d(TAG, "onStartCommand: ");
         if (intent != null) {
             String action = intent.getAction();
             if (action != null) {
                 switch (action) {
                     case ACTION_MODE_START:
                         int intExtra = intent.getIntExtra(MODE_START_KEY, -1);
-                        Log.d(TAG, "onStartCommand: " + intExtra);
+                        Logger.d(TAG, "onStartCommand: " + intExtra);
                         if (intExtra == AutoConstants.AppStatus.RUN_FOREGROUND) {
+                            Logger.d(TAG, "onStartCommand: 前台启动蓝牙音乐");
                             Intent startActivity = new Intent(this, MainActivity.class);
                             startActivity.putExtra(ACTION_START_ACTIVITY, START_ACTIVITY_VALUE);
                             startActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(startActivity);
                         } else if (intExtra == AutoConstants.AppStatus.RUN_BACKGROUND) {
+                            Logger.d(TAG, "onStartCommand: 后台启动蓝牙音乐");
                             sendMessageToBTNative(REQ_BT_MUSIC_PLAY, null);
                             BtMiddleSettingManager.getInstance().setBtMusicStatus(false);
                             BtMusicAudioFocusModel.getINSTANCE().applyAudioFocus();
