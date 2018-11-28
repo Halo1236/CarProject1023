@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DialogDemo</string>
     <string name="click_me_text">点我</string>
+    <string name="time_text">"00:00"</string>
 </resources>
