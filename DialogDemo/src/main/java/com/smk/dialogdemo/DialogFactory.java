@@ -3,6 +3,8 @@ package com.smk.dialogdemo;
 import android.content.Context;
 import android.view.View;
 
+import com.smk.dialogdemo.sevice.SmallDialog;
+
 public class DialogFactory {
 
 
@@ -176,5 +178,15 @@ public class DialogFactory {
                 .setTitleTextSize(SmartDialog.TITLE_FIRST, 28)
                 .setTitleText(SmartDialog.TITLE_FIRST, title);
         return smartDialog;
+    }
+
+    /**
+     * 服务顶部小窗
+     * @param ctx
+     * @return
+     */
+    public static SmallDialog createSmallDialog(Context ctx){
+        SmallDialog smallDialog = new SmallDialog(ctx);
+        return smallDialog;
     }
 }

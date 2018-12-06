@@ -41,4 +41,9 @@
     <style name="SmartDialog.Theme" parent="BaseDialogTheme"></style>
     <style name="OneTitleDialog.Theme" parent="BaseDialogTheme"></style>
 
+    <style name="SmallDialog.Theme" parent="BaseDialogTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
 </resources>
