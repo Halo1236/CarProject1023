@@ -6,13 +6,18 @@ import android.os.RemoteException;
 
 import com.nforetek.bt.aidl.UiCallbackBluetooth;
 import com.nforetek.bt.res.NfDef;
+import com.smk.bt.bean.BTDeviceInfo;
 import com.smk.bt.service.manager.BTServiceProxyManager;
 import com.smk.bt.utils.Logger;
 import com.smk.bt.views.fragment.IBTDeviceListView;
 
-public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePresenter<V> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePresenter<V> implements IBTDeviceListPresenter {
     private static final String TAG = Logger.makeLogTag(BTDeviceListPresenter.class);
     private Handler _handler;
+    private List<BTDeviceInfo> mBTDeviceInfoList = new ArrayList<BTDeviceInfo>();
 
     public BTDeviceListPresenter() {
         this._handler = new Handler(Looper.getMainLooper());
@@ -24,10 +29,7 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
         @Override
         public void onServiceConnected() {
             BTServiceProxyManager.getInstance().registerBtCallback(mCallbackBluetooth);
-            boolean isBtEnabled = BTServiceProxyManager.getInstance().isBtEnabled();
-            if (isBindView()) {
-                mViewRfr.get().onBTSwitchStateChange(isBtEnabled);
-            }
+            initBTSwitchState();
         }
     };
 
@@ -40,27 +42,7 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
         @Override
         public void onAdapterStateChanged(int prevState, int newState) throws RemoteException {
             Logger.v(TAG, "onAdapterStateChanged() prevState = " + prevState + " newState = " + newState);
-            if (newState == NfDef.BT_STATE_ON) {
-                Logger.v(TAG, "onAdapterStateChanged() BT_STATE_ON");
-                _handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isBindView()) {
-                            mViewRfr.get().onBTSwitchStateChange(true);
-                        }
-                    }
-                });
-            } else if (newState == NfDef.BT_STATE_OFF) {
-                Logger.v(TAG, "onAdapterStateChanged() BT_STATE_OFF");
-                _handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isBindView()) {
-                            mViewRfr.get().onBTSwitchStateChange(false);
-                        }
-                    }
-                });
-            }
+            changeStateOfBTSwitch(newState, false);
         }
 
         @Override
@@ -85,6 +67,8 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
 
         @Override
         public void onDeviceFound(String address, String name, byte category) throws RemoteException {
+            Logger.i(TAG, "onDeviceFound() address : " + address + " , name : " + name);
+            addDeviceInfoToList(address, name);
 
         }
 
@@ -143,28 +127,118 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
     public void onDetachView() {
         BTServiceProxyManager.getInstance().unregisterBtCallback(mCallbackBluetooth);
         BTServiceProxyManager.getInstance().unregisterOnServiceConnectListener(mOnServiceConnectListener);
+        mBTDeviceInfoList.clear();
+        mBTDeviceInfoList = null;
+        _handler.removeCallbacksAndMessages(null);
+        _handler = null;
         super.onDetachView();
     }
 
-    public void setBTSwitchState() {
+    // IBTDeviceListPresenter Function
+
+    @Override
+    public void initBTSwitchState() {
+        if (isBindView()) {
+            int btState = BTServiceProxyManager.getInstance().getBtState();
+            Logger.i(TAG, "initBTSwitchState() btState : " + btState);
+            changeStateOfBTSwitch(btState, true);
+        }
+    }
+
+    @Override
+    public void setBtEnable() {
         if (isBindView()) {
             boolean isBtEnable = BTServiceProxyManager.getInstance().isBtEnabled();
             Logger.v(TAG, "setBTSwitchState() isBtEnable = " + isBtEnable);
-            BTServiceProxyManager.getInstance().setBtEnable(isBtEnable ? false : true);
+            if (isBtEnable) {
+                changeStateOfBTSwitch(NfDef.BT_STATE_TURNING_OFF, false);
+                BTServiceProxyManager.getInstance().setBtEnable(false);
+                removeDeviceList();
+            } else {
+                BTServiceProxyManager.getInstance().setBtEnable(true);
+                changeStateOfBTSwitch(NfDef.BT_STATE_TURNING_ON, false);
+            }
         }
     }
 
-    public void initBTSwitchState() {
+    @Override
+    public void startBtDiscovery() {
         if (isBindView()) {
-            boolean isBtEnabled = BTServiceProxyManager.getInstance().isBtEnabled();
-            mViewRfr.get().onBTSwitchStateChange(isBtEnabled);
-        }
-    }
-
-    public void startBtDiscovery(){
-        if(isBindView()){
-            Logger.v(TAG,"startBtDiscovery()");
+            Logger.v(TAG, "startBtDiscovery()");
+            removeDeviceList();
             BTServiceProxyManager.getInstance().startBtDiscovery();
         }
     }
+
+    private void removeDeviceList() {
+        synchronized (mBTDeviceInfoList) {
+            if(null != mBTDeviceInfoList && mBTDeviceInfoList.size() > 0){
+                mBTDeviceInfoList.clear();
+                notifyChangeDeviceInfoList();
+            }
+        }
+    }
+
+    private void addDeviceInfoToList(String address, String name) {
+        synchronized (mBTDeviceInfoList) {
+            if (null != mBTDeviceInfoList && !mBTDeviceInfoList.contains(address)) {
+                mBTDeviceInfoList.add(new BTDeviceInfo(name, address, false));
+                notifyChangeDeviceInfoList();
+            }
+        }
+    }
+
+    // bt device info list change
+    private void notifyChangeDeviceInfoList() {
+        synchronized (mBTDeviceInfoList) {
+            _handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (isBindView()) {
+                        mViewRfr.get().onChangeDeviceList(mBTDeviceInfoList);
+                    }
+                }
+            });
+        }
+    }
+
+    // 蓝牙开关状态改变
+    private void changeStateOfBTSwitch(final int state, final boolean fromInitCall) {
+
+        _handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isBindView()) {
+                    mViewRfr.get().onBTSwitchStateChange(state == NfDef.BT_STATE_ON);
+                    switch (state) {
+                        case NfDef.BT_STATE_OFF:
+                            if (!fromInitCall) {
+                                mViewRfr.get().onChangeStateOfBTSwitchDialog(IBTDeviceListView.BT_STATE_OFF);
+                            }
+                            break;
+                        case NfDef.BT_STATE_TURNING_ON:
+                            mViewRfr.get().onChangeStateOfBTSwitchDialog(IBTDeviceListView.BT_STATE_TURNING_ON);
+                            break;
+                        case NfDef.BT_STATE_ON:
+                            if (!fromInitCall) {
+                                mViewRfr.get().onChangeStateOfBTSwitchDialog(IBTDeviceListView.BT_STATE_ON);
+                            }
+                            break;
+                        case NfDef.BT_STATE_TURNING_OFF:
+                            mViewRfr.get().onChangeStateOfBTSwitchDialog(IBTDeviceListView.BT_STATE_TURNING_OFF);
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void reqBtPair(String address){
+        if(isBindView()){
+            BTServiceProxyManager.getInstance().reqBtPair(address);
+        }
+    }
+
+
 }

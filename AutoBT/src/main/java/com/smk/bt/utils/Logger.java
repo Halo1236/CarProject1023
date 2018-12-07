@@ -6,7 +6,7 @@ import android.util.Log;
  *
  */
 public class Logger {
-    private static final String PREFIX_LOG = "Jonhliu_";
+    private static final String PREFIX_LOG = "jonhliu_";
     private static final boolean V = true;
     private static final boolean I = true;
     private static final boolean D = true;

@@ -11,4 +11,9 @@
     <string name="bt_tab_device_list_swtich_on_text">开</string>
     <string name="bt_tab_device_list_swtich_off_text">关</string>
     <string name="bt_tab_device_list_rediscovery_text">刷新</string>
+
+    <string name="bt_switch_state_turning_on_text">蓝牙开关正在打开...</string>
+    <string name="bt_switch_state_on_text">蓝牙开关已打开</string>
+    <string name="bt_switch_state_turning_off_text">蓝牙开关正在关闭...</string>
+    <string name="bt_switch_state_off_text">蓝牙开关已开关闭</string>
 </resources>

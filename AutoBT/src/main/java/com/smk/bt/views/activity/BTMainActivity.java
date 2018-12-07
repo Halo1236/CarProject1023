@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.smk.bt.R;
 import com.smk.bt.presenter.BTMainPresenter;
+import com.smk.bt.utils.Logger;
 import com.smk.bt.views.custom.BTBottombar;
 import com.smk.bt.views.fragment.BTCallLogListFragment;
 import com.smk.bt.views.fragment.BTContractsListFragment;
@@ -17,7 +18,6 @@ import com.smk.bt.views.fragment.BTMusicPlayerFragment;
 import com.smk.bt.views.fragment.BTSettingFragment;
 
 public class BTMainActivity extends BaseActivity<IBTMainView,BTMainPresenter<IBTMainView>> implements IBTMainView,BTBottombar.OnTabChangeListener{
-
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
 
@@ -37,6 +37,11 @@ public class BTMainActivity extends BaseActivity<IBTMainView,BTMainPresenter<IBT
     private int mCurrentFragmentFlag = FRAGMENT_DEVICE_LIST_FLAG;
 
     private BTBottombar mBTBottombar;
+
+    @Override
+    protected String getTagLog() {
+        return Logger.makeLogTag(BTMainActivity.class);
+    }
 
     @Override
     protected int getLayoutResId() {
