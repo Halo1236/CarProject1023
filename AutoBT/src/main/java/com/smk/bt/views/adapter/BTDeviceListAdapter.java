@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import com.smk.bt.R;
 import com.smk.bt.bean.BTDeviceInfo;
+import com.smk.bt.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BTDeviceListAdapter extends BaseAdapter implements View.OnClickListener {
+public class BTDeviceListAdapter extends BaseAdapter {
+    private static final String TAG = Logger.makeLogTag(BTDeviceListAdapter.class);
     private Context mContext;
     private List<BTDeviceInfo> mBTDeviceInfoList;
     private OnDeviceListItemListener mOnDeviceListItemListener;
@@ -54,36 +56,44 @@ public class BTDeviceListAdapter extends BaseAdapter implements View.OnClickList
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_device_list, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-
-            holder.iv_device_delete.setTag(position);
-            holder.iv_device_pair.setTag(position);
-            holder.iv_device_delete.setOnClickListener(this);
-            holder.iv_device_pair.setOnClickListener(this);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        holder.iv_device_delete.setTag(position);
+        holder.iv_device_pair.setTag(position);
+        holder.iv_device_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null == mOnDeviceListItemListener) {
+                    return;
+                }
+                int pos = (Integer) v.getTag();
+                Logger.i(TAG, "onClick() getTag : " + v.getId());
+                Logger.i(TAG, "onClick() size : " + (null != mBTDeviceInfoList ? mBTDeviceInfoList.size() : 0));
+                if (pos >= 0 && pos < mBTDeviceInfoList.size()) {
+                    mOnDeviceListItemListener.onBtDeviceDelete(mBTDeviceInfoList.get(pos).getAddress());
+                }
+            }
+        });
+        holder.iv_device_pair.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null == mOnDeviceListItemListener) {
+                    return;
+                }
+                int pos = (Integer) v.getTag();
+                Logger.i(TAG, "onClick() getTag : " + pos);
+                Logger.i(TAG, "onClick() size : " + (null != mBTDeviceInfoList ? mBTDeviceInfoList.size() : 0));
+                if (pos >= 0 && pos < mBTDeviceInfoList.size()) {
+                    mOnDeviceListItemListener.onBtDevicePair(mBTDeviceInfoList.get(pos).getAddress());
+                }
+            }
+        });
+
         holder.tv_device_name.setText(mBTDeviceInfoList.get(position).getName());
         holder.iv_device_delete.setVisibility(mBTDeviceInfoList.get(position).isFavorite() ? View.VISIBLE : View.INVISIBLE);
         return convertView;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (null == mOnDeviceListItemListener) {
-            return;
-        }
-        int pos = (Integer) v.getTag();
-        if (pos > 0 && pos < mBTDeviceInfoList.size()) {
-            switch (v.getId()) {
-                case R.id.iv_device_delete:
-                    mOnDeviceListItemListener.onBtDeviceDelete(mBTDeviceInfoList.get(pos).getAddress());
-                    break;
-                case R.id.iv_device_pair:
-                    mOnDeviceListItemListener.onBtDevicePair(mBTDeviceInfoList.get(pos).getAddress());
-                    break;
-            }
-        }
     }
 
     class ViewHolder {

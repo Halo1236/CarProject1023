@@ -8,7 +8,9 @@ public interface IBTDeviceListPresenter {
 
     void startBtDiscovery();
 
-    void reqBtPair(String address);
+    void reqBtConnectHfpA2dp(String address);
+
+    void cancelBtDiscovery();
 
 
 }

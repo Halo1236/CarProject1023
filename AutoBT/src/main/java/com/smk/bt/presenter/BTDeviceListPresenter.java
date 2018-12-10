@@ -52,12 +52,14 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
 
         @Override
         public void onAdapterDiscoveryStarted() throws RemoteException {
-
+            Logger.i(TAG,"onAdapterDiscoveryStarted()");
+            notifyBTDiscoveryChangeState(IBTDeviceListView.BT_STATE_DISCOVERY_START);
         }
 
         @Override
         public void onAdapterDiscoveryFinished() throws RemoteException {
-
+            Logger.i(TAG,"onAdapterDiscoveryFinished()");
+            notifyBTDiscoveryChangeState(IBTDeviceListView.BT_STATE_DISCOVERY_FINISHED);
         }
 
         @Override
@@ -74,7 +76,14 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
 
         @Override
         public void onDeviceBondStateChanged(String address, String name, int prevState, int newState) throws RemoteException {
-
+            Logger.i(TAG, "onDeviceBondStateChanged() address : " + address + " prevState : " + prevState + " newState : " + newState);
+            if (prevState == NfDef.BOND_NONE && newState == NfDef.BOND_BONDING) {
+                notifyBtPairChangeState(NfDef.BOND_BONDING);
+            } else if (prevState == NfDef.BOND_BONDING && newState == NfDef.BOND_BONDED) {
+                notifyBtPairChangeState(NfDef.BOND_BONDED);
+            } else if (prevState == NfDef.BOND_BONDING && newState == NfDef.BOND_NONE) {
+                notifyBtPairChangeState(NfDef.BOND_NONE);
+            }
         }
 
         @Override
@@ -172,7 +181,7 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
 
     private void removeDeviceList() {
         synchronized (mBTDeviceInfoList) {
-            if(null != mBTDeviceInfoList && mBTDeviceInfoList.size() > 0){
+            if (null != mBTDeviceInfoList && mBTDeviceInfoList.size() > 0) {
                 mBTDeviceInfoList.clear();
                 notifyChangeDeviceInfoList();
             }
@@ -234,11 +243,59 @@ public class BTDeviceListPresenter<V extends IBTDeviceListView> extends BasePres
     }
 
     @Override
-    public void reqBtPair(String address){
-        if(isBindView()){
-            BTServiceProxyManager.getInstance().reqBtPair(address);
+    public void reqBtConnectHfpA2dp(String address) {
+        Logger.i(TAG, "reqBtConnectHfpA2dp() ..." + (null != address ? address : "null"));
+        if (isBindView()) {
+            notifyBtPairChangeState(NfDef.BOND_BONDING);
+            BTServiceProxyManager.getInstance().reqBtConnectHfpA2dp(address);
         }
     }
 
+    private void notifyBtPairChangeState(final int state) {
+        if (!isBindView()) {
+            return;
+        }
 
+        _handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (!isBindView()) {
+                    return;
+                }
+                switch (state) {
+                    case NfDef.BOND_NONE:
+                        mViewRfr.get().onChangeStateOfBTPair(IBTDeviceListView.BT_STATE_BOND_NONE);
+                        break;
+                    case NfDef.BOND_BONDING:
+                        mViewRfr.get().onChangeStateOfBTPair(IBTDeviceListView.BT_STATE_BONDING);
+                        break;
+                    case NfDef.BOND_BONDED:
+                        mViewRfr.get().onChangeStateOfBTPair(IBTDeviceListView.BT_STATE_BONDED);
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void cancelBtDiscovery() {
+        if (isBindView()) {
+            BTServiceProxyManager.getInstance().cancelBtDiscovery();
+        }
+    }
+
+    private void notifyBTDiscoveryChangeState(final int state) {
+        if (!isBindView()) {
+            return;
+        }
+        _handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (!isBindView()) {
+                    return;
+                }
+                mViewRfr.get().onChangeStateOfBTDiscovery(state);
+            }
+        });
+    }
 }

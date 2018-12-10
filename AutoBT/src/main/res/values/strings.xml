@@ -16,4 +16,9 @@
     <string name="bt_switch_state_on_text">蓝牙开关已打开</string>
     <string name="bt_switch_state_turning_off_text">蓝牙开关正在关闭...</string>
     <string name="bt_switch_state_off_text">蓝牙开关已开关闭</string>
+    <string name="bt_pair_state_pairing">蓝牙正在连接...</string>
+    <string name="bt_pair_state_pair_success">蓝牙连接成功！</string>
+    <string name="bt_pair_state_pair_fail">蓝牙连接失败！</string>
+    <string name="bt_discovery_dialog_btn_cancel">取消</string>
+    <string name="bt_discovery_start">开始扫描...</string>
 </resources>
