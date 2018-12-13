@@ -60,4 +60,19 @@ public class DialogService extends Service {
             Log.i(TAG,"dismissSmallDialog() ...");
         }
     }
+/*
+    private void showSmallDialog(){
+
+        if(!BTCallWindowManager.getInstance().isShowing()){
+            BTCallWindowManager.getInstance().createBTCallFullScreenFloatLayout(this).show();
+            Log.i(TAG,"showSmallDialog() ...");
+        }
+    }
+
+    private void dismissSmallDialog(){
+        if(BTCallWindowManager.getInstance().isShowing()){
+            BTCallWindowManager.getInstance().dismiss();
+            Log.i(TAG,"dismissSmallDialog() ...");
+        }
+    }*/
 }
