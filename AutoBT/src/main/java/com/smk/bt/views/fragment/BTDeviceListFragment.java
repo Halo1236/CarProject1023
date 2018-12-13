@@ -1,5 +1,6 @@
 package com.smk.bt.views.fragment;
 
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -213,6 +214,15 @@ public class BTDeviceListFragment extends BaseFragment<IBTDeviceListView, BTDevi
                             }
                         }
                     });
+
+            this.mBTDiscoveryDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    if (isBindPresenter()) {
+                        mPresenter.cancelBtDiscovery();
+                    }
+                }
+            });
         }
         switch (state) {
             case BT_STATE_DISCOVERY_START:

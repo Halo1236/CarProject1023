@@ -1,2 +1,2 @@
 // include ':AutoBT', ':SimpleMvp', ':simplemvplibrary', ':BM2718_AutoBT',':DialogDemo'
-include ':AutoBT', ':NetFM'
+include ':AutoBT', ':DialogDemo'

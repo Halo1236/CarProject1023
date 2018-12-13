@@ -41,9 +41,14 @@
     <style name="SmartDialog.Theme" parent="BaseDialogTheme"></style>
     <style name="OneTitleDialog.Theme" parent="BaseDialogTheme"></style>
 
-    <style name="SmallDialog.Theme" parent="BaseDialogTheme">
+    <style name="SmallDialog.Theme" parent="@android:style/Theme.Dialog">
         <item name="android:windowFullscreen">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否去除标题 -->
+        <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@android:color/holo_blue_bright</item>
     </style>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.smk.dialogdemo;
+package com.smk.dialogdemo.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.smk.dialogdemo.R;
 import com.smk.dialogdemo.sevice.DialogService;
-import com.smk.dialogdemo.sevice.SmallDialog;
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG = "test";
@@ -23,7 +23,8 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.btn_click_me).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSmallDialog();
+//                showSmallDialog();
+                BTCallWindowManager.getInstance().createBTCallFullScreenFloatLayout(MainActivity.this).show();
             }
         });
     }

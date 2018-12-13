@@ -9,7 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AutoBT" />
-            <option value="$PROJECT_DIR$/NetFM" />
+            <option value="$PROJECT_DIR$/DialogDemo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

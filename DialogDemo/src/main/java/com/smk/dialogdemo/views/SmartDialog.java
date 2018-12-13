@@ -1,4 +1,4 @@
-package com.smk.dialogdemo;
+package com.smk.dialogdemo.views;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.smk.dialogdemo.R;
 
 public class SmartDialog extends Dialog implements View.OnClickListener {
 

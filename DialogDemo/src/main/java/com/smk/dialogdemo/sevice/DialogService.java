@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.smk.dialogdemo.DialogFactory;
-
-import java.util.logging.Logger;
+import com.smk.dialogdemo.views.DialogFactory;
+import com.smk.dialogdemo.views.SmallDialog;
 
 public class DialogService extends Service {
     private static final String TAG = "DialogService";
@@ -56,7 +55,7 @@ public class DialogService extends Service {
     }
 
     private void dismissSmallDialog(){
-        if(null != smallDialog && !smallDialog.isShowing()){
+        if(null != smallDialog && smallDialog.isShowing()){
             smallDialog.dismiss();
             Log.i(TAG,"dismissSmallDialog() ...");
         }

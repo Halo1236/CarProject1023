@@ -1,9 +1,7 @@
-package com.smk.dialogdemo;
+package com.smk.dialogdemo.views;
 
 import android.content.Context;
 import android.view.View;
-
-import com.smk.dialogdemo.sevice.SmallDialog;
 
 public class DialogFactory {
 
