@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fullscreen_float_window_dialpad_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="502dp"
+        android:layout_height="297dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fullscreen_inputtext"
+            android:layout_width="502dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_keyboard_inputbox"
+            android:ellipsize="start"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
+        <!--1,4,7,*-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="34dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_1"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_4"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_7"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_asterisk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_asterisk"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+        </LinearLayout>
+        <!--2,5,8,0+-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="34dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_2"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_5"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_8"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_0"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+        </LinearLayout>
+        <!--3,6,9,#-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_3"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_6"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_9"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/fullscreen_float_window_dialpad_key_pound_sign"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_keyboard_btn_bg_selector"
+                android:text="@string/float_window_dialpad_key_pound_sign"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

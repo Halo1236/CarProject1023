@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/icon_bg_global">
+
+    <include
+        android:id="@+id/include_fullscreen_root_layout"
+        layout="@layout/float_window_bt_call_fullscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/include_fullscreen_dialpad_root_layout"
+        layout="@layout/float_window_bt_call_dialpad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="170px"
+        android:visibility="invisible"/>
+
+    <include
+        android:id="@+id/include_smallscreen_root_layout"
+        layout="@layout/float_window_bt_call_smallscreen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+</RelativeLayout>

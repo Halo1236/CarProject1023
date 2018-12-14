@@ -24,7 +24,6 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
 //                showSmallDialog();
-                BTCallWindowManager.getInstance().createBTCallFullScreenFloatLayout(MainActivity.this).show();
             }
         });
     }

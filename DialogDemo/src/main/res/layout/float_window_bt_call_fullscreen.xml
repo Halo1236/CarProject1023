@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright">
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/fullscreen_float_window_call_details_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/tv_phone_name"
@@ -49,33 +50,52 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="70px"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:text="@android:string/unknownName">
+        android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/fullscreen_float_window_call_pickup"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
+            android:background="@drawable/selector_keyboard_btn_bg_selector"
+            android:src="@drawable/icon_fullscreen_call_hangup"
+            android:visibility="gone" />
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/fullscreen_float_window_call_hungup"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
+            android:background="@drawable/selector_keyboard_btn_bg_selector"
+            android:src="@drawable/icon_fullscreen_call_answer" />
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/fullscreen_float_window_call_mic"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_marginLeft="21dp"
+            android:layout_marginRight="21dp"
+            android:background="@drawable/selector_keyboard_btn_bg_selector"
+            android:src="@drawable/icon_fullscreen_call_mic" />
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/fullscreen_float_window_call_dialpad_switch"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_marginRight="21dp"
+            android:background="@drawable/selector_keyboard_btn_bg_selector"
+            android:src="@drawable/icon_fullscreen_call_keyboard" />
+
+        <ImageButton
+            android:id="@+id/fullscreen_float_window_call_audio_mode"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_keyboard_btn_bg_selector"
+            android:src="@drawable/icon_fullscreen_call_car" />
     </LinearLayout>
 
 </RelativeLayout>
