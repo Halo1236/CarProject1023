@@ -122,18 +122,13 @@ public class BTCallFloatWindow {
     public void refresh() {
         // 根据浮窗模式改变布局
         changeLayoutWithFloatWindowMode();
-        changeUiTimerVisibleWithFloatWindowType();
     }
 
-    // 根据浮窗类型改变计时控件显示状态
-    void changeUiTimerVisibleWithFloatWindowType() {
-        Log.i(TAG, "refresh() mCurrentFloatWindowType : " + mCurrentFloatWindowType);
-        mFullFloatWindowViewHolder.tv_phone_timer.setVisibility(mCurrentFloatWindowType == FLOAT_WINDOW_TYPE_ACTIVE?View.INVISIBLE:View.VISIBLE);
-    }
-
-    // 根据浮窗模式改变布局
+    // 根据浮窗模式改变布局显示状态
     void changeLayoutWithFloatWindowMode() {
         Log.i(TAG, "refresh() mCurrentFloatWindowMode : " + mCurrentFloatWindowMode);
+        // 根据浮窗类型改变计时控件显示状态
+        mFullFloatWindowViewHolder.tv_phone_timer.setVisibility(mCurrentFloatWindowType == FLOAT_WINDOW_TYPE_ACTIVE?View.INVISIBLE:View.VISIBLE);
         switch (mCurrentFloatWindowMode) {
             case FLOAT_WINDOW_MODE_SMALL:
                 mFullFloatWindowViewHolder.include_fullscreen_root_layout.setVisibility(View.INVISIBLE);// 全屏浮窗布局隐藏
