@@ -17,6 +17,7 @@ public class DialogService extends Service {
     private static final int CMD_CALL_STATUS_OUTGOING = 1;
     private static final int CMD_CALL_STATUS_INCOMING = 2;
     private static final int CMD_CALL_STATUS_ACTIVI = 3;
+    private static final int CMD_CALL_STATUS_TERMINATED = 4;
 
 
     @Override
@@ -32,16 +33,20 @@ public class DialogService extends Service {
         String action = intent.getAction();
         if (ACTION_DIALOG_CONTROL.equals(action)) {
             int cmd = intent.getIntExtra(PARAM_CMD, -1);
+            Log.i(TAG, "onStartCommand() CMD : " + cmd);
             switch (cmd) {
-                case CMD_CALL_STATUS_OUTGOING:
+                case CMD_CALL_STATUS_OUTGOING:// 去電
 //                    showSmallDialog();
                     showBTCallFloatWindow();
                     break;
-                case CMD_CALL_STATUS_INCOMING:
+                case CMD_CALL_STATUS_INCOMING:// 來電
 //                    dismissSmallDialog();
-                    dismissBTCallFloatWindow();
+
                     break;
-                case CMD_CALL_STATUS_ACTIVI:
+                case CMD_CALL_STATUS_ACTIVI:// 接通電話
+                    break;
+                case CMD_CALL_STATUS_TERMINATED:// 掛斷電話
+                    dismissBTCallFloatWindow();
                     break;
                 default:
                     Log.i(TAG, "Unkown Command !!!");
