@@ -2,11 +2,13 @@ package com.smk.dialogdemo.views;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,7 +26,8 @@ public class BTCallFloatWindow {
     public static final int FLOAT_WINDOW_TYPE_INVALID = -1;// 无效浮窗类型
     public static final int FLOAT_WINDOW_TYPE_ACTIVE = 100;// 通话浮窗类型
     public static final int FLOAT_WINDOW_TYPE_DIALING = 101;// 拨号浮窗类型
-    public static final int FLAGT_WINDOW_TYPE_INCOMING = 102;// 来电浮窗类型
+    public static final int FLOAT_WINDOW_TYPE_INCOMING = 102;// 来电浮窗类型
+    public static final int FLOAT_WINDOW_TYPE_TERMINATED = 103;// 挂断电话浮窗类型
 
     private View mBTCallContentView;
     private WindowManager mWindowManager;
@@ -50,6 +53,13 @@ public class BTCallFloatWindow {
                 tv_phone_status;
         private Chronometer tv_phone_timer;
 
+        private ImageButton
+                ib_pickup,
+                ib_hungup,
+                ib_mic,
+                ib_dialpad_switch,
+                ib_audio_mode;
+
         FullFloatWindowViewHolder(View v) {
             // dialpad ui
             include_fullscreen_dialpad_root_layout = v.findViewById(R.id.include_fullscreen_dialpad_root_layout);
@@ -61,6 +71,12 @@ public class BTCallFloatWindow {
             tv_phone_number = (TextView) v.findViewById(R.id.tv_phone_number);
             tv_phone_status = (TextView) v.findViewById(R.id.tv_phone_status);
             tv_phone_timer = (Chronometer) v.findViewById(R.id.tv_phone_timer);
+            // call button control
+            ib_pickup = (ImageButton) v.findViewById(R.id.ib_pickup);// 接听按键
+            ib_hungup = (ImageButton) v.findViewById(R.id.ib_hungup);// 挂断按键
+            ib_mic = (ImageButton) v.findViewById(R.id.ib_mic);// 禁mic开关按键
+            ib_dialpad_switch = (ImageButton) v.findViewById(R.id.ib_dialpad_switch);// 拨号键盘开关键
+            ib_audio_mode = (ImageButton) v.findViewById(R.id.ib_audio_mode);// 私密切换开关按键
         }
     }
 
@@ -120,25 +136,76 @@ public class BTCallFloatWindow {
 
     // utils
     public void refresh() {
-        // 根据浮窗模式改变布局
-        changeLayoutWithFloatWindowMode();
+        // 根据浮窗类型改变计时控件显示状态
+        switch (mCurrentFloatWindowMode) {
+            case FLOAT_WINDOW_MODE_SMALL:
+                changeLayoutUiWithSmallFloatWindowMode();
+                break;
+            case FLOAT_WINDOW_MODE_FULL:
+                changeLayoutUiWithFullFloatWindowMode();
+                break;
+        }
+    }
+
+    // 根据浮窗模式改变全屏布局显示状态
+    void changeLayoutUiWithFullFloatWindowMode() {
+        Log.i(TAG, "changeLayoutUiWithFullFloatWindowMode() mCurrentFloatWindowType=" + mCurrentFloatWindowType);
+        mSmallFloatWindowViewHolder.include_smallscreen_root_layout.setVisibility(View.INVISIBLE);// 小窗浮窗布局隐藏
+        mFullFloatWindowViewHolder.include_fullscreen_root_layout.setVisibility(View.VISIBLE);// 全屏浮窗布局显示
+        mFullFloatWindowViewHolder.include_fullscreen_dialpad_root_layout.setVisibility(View.INVISIBLE);// 全屏键盘浮窗布局显示
+
+        switch (mCurrentFloatWindowType) {
+            case FLOAT_WINDOW_TYPE_ACTIVE:
+                // hide ui
+                mFullFloatWindowViewHolder.ib_pickup.setVisibility(View.INVISIBLE);
+                // show ui
+                mFullFloatWindowViewHolder.tv_phone_timer.setVisibility(View.VISIBLE);
+                mFullFloatWindowViewHolder.tv_phone_timer.setBase(SystemClock.elapsedRealtime());
+                mFullFloatWindowViewHolder.tv_phone_timer.start();
+
+                mFullFloatWindowViewHolder.ib_hungup.setVisibility(View.VISIBLE);
+                mFullFloatWindowViewHolder.ib_mic.setVisibility(View.VISIBLE);
+                mFullFloatWindowViewHolder.ib_dialpad_switch.setVisibility(View.VISIBLE);
+                mFullFloatWindowViewHolder.ib_audio_mode.setVisibility(View.VISIBLE);
+                break;
+            case FLOAT_WINDOW_TYPE_DIALING:
+                // hide ui
+                mFullFloatWindowViewHolder.tv_phone_timer.setVisibility(View.INVISIBLE);
+                mFullFloatWindowViewHolder.ib_pickup.setVisibility(View.GONE);
+                mFullFloatWindowViewHolder.ib_mic.setVisibility(View.GONE);
+                mFullFloatWindowViewHolder.ib_dialpad_switch.setVisibility(View.GONE);
+                mFullFloatWindowViewHolder.ib_audio_mode.setVisibility(View.GONE);
+                // show ui
+                mFullFloatWindowViewHolder.ib_hungup.setVisibility(View.VISIBLE);
+                break;
+            case FLOAT_WINDOW_TYPE_INCOMING:
+                // hide ui
+                mFullFloatWindowViewHolder.tv_phone_timer.setVisibility(View.INVISIBLE);
+                mFullFloatWindowViewHolder.ib_mic.setVisibility(View.GONE);
+                mFullFloatWindowViewHolder.ib_dialpad_switch.setVisibility(View.GONE);
+                mFullFloatWindowViewHolder.ib_audio_mode.setVisibility(View.GONE);
+                // show ui
+                mFullFloatWindowViewHolder.ib_hungup.setVisibility(View.VISIBLE);
+                mFullFloatWindowViewHolder.ib_pickup.setVisibility(View.VISIBLE);
+                break;
+            case FLOAT_WINDOW_TYPE_TERMINATED:
+                mFullFloatWindowViewHolder.tv_phone_timer.stop();
+                break;
+        }
     }
 
     // 根据浮窗模式改变布局显示状态
-    void changeLayoutWithFloatWindowMode() {
-        Log.i(TAG, "refresh() mCurrentFloatWindowMode : " + mCurrentFloatWindowMode);
-        // 根据浮窗类型改变计时控件显示状态
-        mFullFloatWindowViewHolder.tv_phone_timer.setVisibility(mCurrentFloatWindowType == FLOAT_WINDOW_TYPE_ACTIVE?View.INVISIBLE:View.VISIBLE);
-        switch (mCurrentFloatWindowMode) {
-            case FLOAT_WINDOW_MODE_SMALL:
-                mFullFloatWindowViewHolder.include_fullscreen_root_layout.setVisibility(View.INVISIBLE);// 全屏浮窗布局隐藏
-                mFullFloatWindowViewHolder.include_fullscreen_dialpad_root_layout.setVisibility(View.INVISIBLE);// 全屏键盘浮窗布局隐藏
-                mSmallFloatWindowViewHolder.include_smallscreen_root_layout.setVisibility(View.VISIBLE);// 小窗浮窗布局显示
+    void changeLayoutUiWithSmallFloatWindowMode() {
+        mFullFloatWindowViewHolder.include_fullscreen_root_layout.setVisibility(View.INVISIBLE);// 全屏浮窗布局隐藏
+        mFullFloatWindowViewHolder.include_fullscreen_dialpad_root_layout.setVisibility(View.INVISIBLE);// 全屏键盘浮窗布局隐藏
+        mSmallFloatWindowViewHolder.include_smallscreen_root_layout.setVisibility(View.VISIBLE);// 小窗浮窗布局显示
+
+        switch (mCurrentFloatWindowType) {
+            case FLOAT_WINDOW_TYPE_ACTIVE:
                 break;
-            case FLOAT_WINDOW_MODE_FULL:
-                mSmallFloatWindowViewHolder.include_smallscreen_root_layout.setVisibility(View.INVISIBLE);// 小窗浮窗布局隐藏
-                mFullFloatWindowViewHolder.include_fullscreen_root_layout.setVisibility(View.VISIBLE);// 全屏浮窗布局显示
-                mFullFloatWindowViewHolder.include_fullscreen_dialpad_root_layout.setVisibility(View.VISIBLE);// 全屏键盘浮窗布局显示
+            case FLOAT_WINDOW_TYPE_DIALING:
+                break;
+            case FLOAT_WINDOW_TYPE_INCOMING:
                 break;
         }
     }

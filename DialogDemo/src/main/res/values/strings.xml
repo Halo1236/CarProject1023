@@ -19,4 +19,9 @@
     <string name="float_window_dialpad_key_9">"9"</string>
     <string name="float_window_dialpad_key_pound_sign">"#"</string>
 
+    <string name="float_window_call_state_unknown_text">未知</string>
+    <string name="float_window_call_state_dialing_text">拨号中...</string>
+    <string name="float_window_call_state_active_text">通话中...</string>
+    <string name="float_window_call_state_incoming_text">来电中...</string>
+
 </resources>
