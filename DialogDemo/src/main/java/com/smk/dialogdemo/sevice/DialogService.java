@@ -17,7 +17,7 @@ public class DialogService extends Service {
 
     private static final int CMD_CALL_STATUS_OUTGOING = 1;
     private static final int CMD_CALL_STATUS_INCOMING = 2;
-    private static final int CMD_CALL_STATUS_ACTIVI = 3;
+    private static final int CMD_CALL_STATUS_ACTIVE = 3;
     private static final int CMD_CALL_STATUS_TERMINATED = 4;
 
 
@@ -38,14 +38,14 @@ public class DialogService extends Service {
             switch (cmd) {
                 case CMD_CALL_STATUS_OUTGOING:// 去電
 //                    showSmallDialog();
-                    showBTCallFloatWindow(true, BTCallFloatWindow.FLOAT_WINDOW_TYPE_DIALING,"张三","13714461436");
+                    showBTCallFloatWindow(true, BTCallFloatWindow.FLOAT_WINDOW_TYPE_DIALING, "张三", "13714461436");
                     break;
                 case CMD_CALL_STATUS_INCOMING:// 來電
 //                    dismissSmallDialog();
-                    showBTCallFloatWindow(true, BTCallFloatWindow.FLOAT_WINDOW_TYPE_INCOMING,"张三","13714461436");
+                    showBTCallFloatWindow(true, BTCallFloatWindow.FLOAT_WINDOW_TYPE_INCOMING, "张三", "13714461436");
                     break;
-                case CMD_CALL_STATUS_ACTIVI:// 接通電話
-                    showBTCallFloatWindow(true, BTCallFloatWindow.FLOAT_WINDOW_TYPE_ACTIVE,"张三","13714461436");
+                case CMD_CALL_STATUS_ACTIVE:// 接通電話
+                    showBTCallFloatWindow(true, BTCallFloatWindow.FLOAT_WINDOW_TYPE_ACTIVE, "张三", "13714461436");
                     break;
                 case CMD_CALL_STATUS_TERMINATED:// 掛斷電話
                     dismissBTCallFloatWindow();
@@ -86,6 +86,7 @@ public class DialogService extends Service {
         }
 
         String callStateStr = getString(R.string.float_window_call_state_unknown_text);
+        int floatWindowMode = isFullScreen ? BTCallFloatWindow.FLOAT_WINDOW_MODE_FULL : BTCallFloatWindow.FLOAT_WINDOW_MODE_SMALL;
 
         switch (callState) {
             case BTCallFloatWindow.FLOAT_WINDOW_TYPE_ACTIVE:
@@ -98,25 +99,20 @@ public class DialogService extends Service {
                 callStateStr = getString(R.string.float_window_call_state_incoming_text);
                 break;
         }
-        mBTCallFloatWindow.setCallName(phoneName);
-        mBTCallFloatWindow.setCallNumber(phoneNumber);
-        mBTCallFloatWindow.setCallStatus(callStateStr);
-        mBTCallFloatWindow.setmCurrentFloatWindowMode(isFullScreen ? BTCallFloatWindow.FLOAT_WINDOW_MODE_FULL : BTCallFloatWindow.FLOAT_WINDOW_MODE_SMALL);
-        mBTCallFloatWindow.setmCurrentFloatWindowType(callState);
-        mBTCallFloatWindow.refresh();
-        if (!mBTCallFloatWindow.isShowing()) {
-            mBTCallFloatWindow.show();
-            Log.i(TAG, "showBTCallFloatWindow() ...");
-        }
+        mBTCallFloatWindow.setCallName(phoneName)
+                .setCallNumber(phoneNumber)
+                .setCallStatus(callStateStr)
+                .setmCurrentFloatWindowMode(floatWindowMode)
+                .setmCurrentFloatWindowType(callState)
+                .refresh()
+                .show();
     }
 
     private void dismissBTCallFloatWindow() {
         if (null == mBTCallFloatWindow) {
             return;
         }
-        if (mBTCallFloatWindow.isShowing()) {
-            mBTCallFloatWindow.dismiss();
-            Log.i(TAG, "dismissBTCallFloatWindow() ...");
-        }
+        mBTCallFloatWindow.dismiss();
+        Log.i(TAG, "dismissBTCallFloatWindow() ...");
     }
 }

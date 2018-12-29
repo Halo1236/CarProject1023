@@ -113,12 +113,13 @@ public class BTCallFloatWindow {
     }
 
 
-    public synchronized void show() {
+    public synchronized BTCallFloatWindow show() {
         if (!mIsShowing && isInit()) {
             mWindowManager.addView(mBTCallContentView, mParams);
             mIsShowing = true;
             Log.i(TAG, "show() ...");
         }
+        return this;
     }
 
     public synchronized void dismiss() {
@@ -135,7 +136,7 @@ public class BTCallFloatWindow {
     }
 
     // utils
-    public void refresh() {
+    public BTCallFloatWindow refresh() {
         // 根据浮窗类型改变计时控件显示状态
         switch (mCurrentFloatWindowMode) {
             case FLOAT_WINDOW_MODE_SMALL:
@@ -145,6 +146,7 @@ public class BTCallFloatWindow {
                 changeLayoutUiWithFullFloatWindowMode();
                 break;
         }
+        return this;
     }
 
     // 根据浮窗模式改变全屏布局显示状态
@@ -211,8 +213,9 @@ public class BTCallFloatWindow {
     }
 
     // 设置当前浮窗类型
-    public void setmCurrentFloatWindowType(int mCurrentFloatWindowType) {
+    public BTCallFloatWindow setmCurrentFloatWindowType(int mCurrentFloatWindowType) {
         this.mCurrentFloatWindowType = mCurrentFloatWindowType;
+        return this;
     }
 
     // 获取当前浮窗类型
@@ -221,8 +224,9 @@ public class BTCallFloatWindow {
     }
 
     // 设置当前浮窗模式
-    public void setmCurrentFloatWindowMode(int mCurrentFloatWindowMode) {
+    public BTCallFloatWindow setmCurrentFloatWindowMode(int mCurrentFloatWindowMode) {
         this.mCurrentFloatWindowMode = mCurrentFloatWindowMode;
+        return this;
     }
 
     // 获取当前浮窗模式
@@ -245,8 +249,8 @@ public class BTCallFloatWindow {
         return this;
     }
 
-    public BTCallFloatWindow setCallTime(String callTime) {
-//        mFullFloatWindowViewHolder.tv_phone_timer.setBase();
+    public BTCallFloatWindow setCallTime(long callTime) {
+        mFullFloatWindowViewHolder.tv_phone_timer.setBase(callTime);
         return this;
     }
 
