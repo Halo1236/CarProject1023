@@ -62,6 +62,6 @@ interface IRadioStatusChangeListener {
 	 * 
 	 * @param farOrShortRange
 	 */
-	void onChannelFarOrShortRangeChanged(int farOrShortRange);
+	void onDxLocChanged(int farOrShortRange);
 
 }

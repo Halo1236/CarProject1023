@@ -102,7 +102,7 @@ interface IRadioPlayer {
 	/**
 	 * 切换远近程
 	 */
-	void reqSwitchFarOrShortRange();
+	void reqSwitchDxOrLoc();
 
 	/**
 	 * 获取声道类型

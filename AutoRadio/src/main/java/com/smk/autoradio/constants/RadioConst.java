@@ -1,6 +1,8 @@
 package com.smk.autoradio.constants;
 
 public class RadioConst {
+	// 无效频道
+	public static final int CHANNEL_INVALID = -1;
 	// 频段类型
 	public static final int CHANNEL_TYPE_INVALID = -1;
 	public static final int CHANNEL_TYPE_FM = 100;
