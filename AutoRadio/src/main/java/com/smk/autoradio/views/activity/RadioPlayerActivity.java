@@ -6,7 +6,7 @@ import android.widget.Button;
 import com.smk.autoradio.R;
 import com.smk.autoradio.presenter.RadioPlayerPresenter;
 
-public class RadioPlayerActivity extends BaseActivity<IRadioPlayerView, RadioPlayerPresenter<IRadioPlayerView>> implements IRadioPlayerView,View.OnClickListener {
+public class RadioPlayerActivity extends BaseActivity<IRadioPlayerView, RadioPlayerPresenter<IRadioPlayerView>> implements IRadioPlayerView, View.OnClickListener {
 
     private Button
             btn_switch_band,
@@ -46,15 +46,18 @@ public class RadioPlayerActivity extends BaseActivity<IRadioPlayerView, RadioPla
 
     @Override
     public void onClick(View v) {
-        if(!isBindPresenter()){
+        if (!isBindPresenter()) {
             return;
         }
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_switch_band:
-            break;
+                mPrestener.reqSwitchBand();
+                break;
             case R.id.btn_set_eq:
+                mPrestener.reqSettingEQ();
                 break;
             case R.id.btn_scan:
+                mPrestener.reqFullSearch();
                 break;
             case R.id.btn_switch_loc_or_dx:
                 mPrestener.reqSwitchDxOrLoc();

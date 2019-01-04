@@ -60,8 +60,8 @@ interface IRadioStatusChangeListener {
 	/**
 	 * 远近程变化
 	 * 
-	 * @param farOrShortRange
+	 * @param state
 	 */
-	void onDxLocChanged(int farOrShortRange);
+	void onDxLocChanged(int state);
 
 }
