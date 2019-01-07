@@ -1,14 +1,42 @@
 package com.smk.autoradio.presenter;
 
 import com.smk.autoradio.manager.RadioPlayerProxyManager;
+import com.smk.autoradio.utils.Logutil;
 import com.smk.autoradio.views.activity.IRadioPlayerView;
 
 public class RadioPlayerPresenter<V extends IRadioPlayerView> extends BasePresenter<V> {
+    private static final String TAG = Logutil.makeTagLog(RadioPlayerPresenter.class);
 
     private RadioPlayerProxyManager mRadioPlayerProxyManager;
 
     public RadioPlayerPresenter() {
         mRadioPlayerProxyManager = RadioPlayerProxyManager.getInstance();
+        mRadioPlayerProxyManager.registerOnServieConnectStateListener(mOnServieConnectStateListener);
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        mRadioPlayerProxyManager.unregisterOnServieConnectStateListener(mOnServieConnectStateListener);
+        mOnServieConnectStateListener = null;
+        mRadioPlayerProxyManager = null;
+    }
+
+    private RadioPlayerProxyManager.OnServieConnectStateListener mOnServieConnectStateListener = new RadioPlayerProxyManager.OnServieConnectStateListener() {
+        @Override
+        public void onServiceConnected() {
+            Logutil.i(TAG,"onServiceConnected() ...");
+            reqRestoreChannelPlay();
+        }
+
+        @Override
+        public void onServiceDisconnected() {
+            Logutil.i(TAG,"onServiceDisconnected() ...");
+        }
+    };
+
+    public void initRadio() {
+        mRadioPlayerProxyManager.reqCheckConnectStatus();
     }
 
 
@@ -56,8 +84,5 @@ public class RadioPlayerPresenter<V extends IRadioPlayerView> extends BasePresen
         }
     }
 
-    @Override
-    public void detachView() {
-        super.detachView();
-    }
+
 }

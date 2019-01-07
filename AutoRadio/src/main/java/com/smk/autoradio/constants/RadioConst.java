@@ -11,6 +11,10 @@ public class RadioConst {
 	public static final int SOUNDTRACK_TYPE_INVALID = -1;
 	public static final int SOUNDTRACK_TYPE_MONO = 200;
 	public static final int SOUNDTRACK_TYPE_STEREO = 201;
+	// 远近程类型
+	public static final int SIGNAL_TYPE_INVALID = -1;
+	public static final int SIGNAL_TYPE_DX = 300;
+	public static final int SIGNAL_YTPE_LOC = 301;
 
 
 }

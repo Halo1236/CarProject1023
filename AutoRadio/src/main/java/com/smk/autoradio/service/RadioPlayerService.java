@@ -6,6 +6,9 @@ import android.os.IBinder;
 
 public class RadioPlayerService extends Service {
 
+    RadioPlayerServiceImpl mRadioPlayerServiceImpl;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -13,7 +16,7 @@ public class RadioPlayerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mRadioPlayerServiceImpl = new RadioPlayerServiceImpl();
     }
 
     @Override
