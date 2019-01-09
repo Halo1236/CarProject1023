@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".service.RadioPlayerService">
+        <service android:name=".service.RadioService">
             <intent-filter android:priority="1000">
                 <action android:name="com.semisky.service.RADIO_START"/>
             </intent-filter>

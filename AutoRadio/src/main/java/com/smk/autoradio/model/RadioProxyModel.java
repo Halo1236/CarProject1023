@@ -1,4 +1,4 @@
-package com.smk.autoradio.manager;
+package com.smk.autoradio.model;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,18 +7,18 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.smk.autoradio.aidl.IRadioPlayer;
-import com.smk.autoradio.aidl.IRadioStatusChangeListener;
+import com.smk.autoradio.aidl.IRadioProxyService;
+import com.smk.autoradio.aidl.IRadioStatusListener;
 import com.smk.autoradio.constants.RadioConst;
 import com.smk.autoradio.utils.Logutil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
-    private static final String TAG = Logutil.makeTagLog(RadioPlayerProxyManager.class);
-    private static RadioPlayerProxyManager _INSTANCE;
-    private IRadioPlayer mService;
+public class RadioProxyModel extends IRadioProxyService.Stub{
+    private static final String TAG = Logutil.makeTagLog(RadioProxyModel.class);
+    private static RadioProxyModel _INSTANCE;
+    private IRadioProxyService mService;
     private Context mCtx;
     private List<OnServieConnectStateListener> mCallbacks;
 
@@ -28,21 +28,21 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
         void onServiceDisconnected();
     }
 
-    private RadioPlayerProxyManager() {
+    private RadioProxyModel() {
     }
 
-    public static RadioPlayerProxyManager getInstance() {
+    public static RadioProxyModel getInstance() {
         if (null == _INSTANCE) {
-            synchronized (RadioPlayerProxyManager.class) {
+            synchronized (RadioProxyModel.class) {
                 if (null == _INSTANCE) {
-                    _INSTANCE = new RadioPlayerProxyManager();
+                    _INSTANCE = new RadioProxyModel();
                 }
             }
         }
         return _INSTANCE;
     }
 
-    public RadioPlayerProxyManager init(Context ctx) {
+    public RadioProxyModel init(Context ctx) {
         this.mCtx = ctx;
         return this;
     }
@@ -126,7 +126,7 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Logutil.e(TAG, "onServiceConnected() ..." + (null != name ? name : "null"));
-            mService = IRadioPlayer.Stub.asInterface(service);
+            mService = IRadioProxyService.Stub.asInterface(service);
             notifyServiceConnected();
         }
 
@@ -143,10 +143,10 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
     }
 
     @Override
-    public void registerOnRadioStatusChangeListener(IRadioStatusChangeListener l) {
+    public void registerOnRadioStatusListener(IRadioStatusListener l) {
         if (isConnected()) {
             try {
-                this.mService.registerOnRadioStatusChangeListener(l);
+                this.mService.registerOnRadioStatusListener(l);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -154,10 +154,10 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
     }
 
     @Override
-    public void unregisterOnRadioStatusChangeListener(IRadioStatusChangeListener l) {
+    public void unregisterOnRadioStatusListener(IRadioStatusListener l) {
         if (isConnected()) {
             try {
-                this.mService.unregisterOnRadioStatusChangeListener(l);
+                this.mService.unregisterOnRadioStatusListener(l);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -184,7 +184,7 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
                 e.printStackTrace();
             }
         }
-        return RadioConst.CHANNEL_TYPE_FM;
+        return RadioConst.CHANNEL_TYPE_FM1;
     }
 
     @Override
@@ -257,10 +257,10 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
     }
 
     @Override
-    public void reqPlayChannel(int channel) {
+    public void reqPlayChannel(int channelType,int channel) {
         if (isConnected()) {
             try {
-                this.mService.reqPlayChannel(channel);
+                this.mService.reqPlayChannel(channelType,channel);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -301,10 +301,10 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
     }
 
     @Override
-    public void reqGetFavoriteList() {
+    public void reqGetFavoriteList(int channel) {
         if (isConnected()) {
             try {
-                this.mService.reqGetFavoriteList();
+                this.mService.reqGetFavoriteList(channel);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -312,10 +312,10 @@ public class RadioPlayerProxyManager extends IRadioPlayer.Stub {
     }
 
     @Override
-    public void reqGetSearchList() {
+    public void reqGetSearchList(int channel) {
         if (isConnected()) {
             try {
-                this.mService.reqGetSearchList();
+                this.mService.reqGetSearchList(channel);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

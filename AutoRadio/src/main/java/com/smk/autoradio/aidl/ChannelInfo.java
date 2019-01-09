@@ -7,14 +7,14 @@ public class ChannelInfo implements Parcelable {
     private int channel;// 频道
     private int channelType;// 频道类型
     private int signal;// 信号强度
-    private int soundtrack;// 声道：立体声，单声道
+    private int soundtrackType;// 声道：立体声，单声道
     private boolean isFavorite;//是收藏数据
 
-    public ChannelInfo(int channel, int channelType, int signal, int soundtrack, boolean isFavorite) {
+    public ChannelInfo(int channel, int channelType, int signal, int soundtrackType, boolean isFavorite) {
         this.channel = channel;
         this.channelType = channelType;
         this.signal = signal;
-        this.soundtrack = soundtrack;
+        this.soundtrackType = soundtrackType;
         this.isFavorite = isFavorite;
     }
 
@@ -30,7 +30,7 @@ public class ChannelInfo implements Parcelable {
             channelInfo.channel = in.readInt();
             channelInfo.channelType = in.readInt();
             channelInfo.signal = in.readInt();
-            channelInfo.soundtrack = in.readInt();
+            channelInfo.soundtrackType = in.readInt();
             channelInfo.isFavorite = in.readByte() != 0;
             return channelInfo;
         }
@@ -51,7 +51,7 @@ public class ChannelInfo implements Parcelable {
         dest.writeInt(channel);
         dest.writeInt(channelType);
         dest.writeInt(signal);
-        dest.writeInt(soundtrack);
+        dest.writeInt(soundtrackType);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 
@@ -62,7 +62,7 @@ public class ChannelInfo implements Parcelable {
                 "channel=" + channel +
                 ", channelType=" + channelType +
                 ", signal=" + signal +
-                ", soundtrack=" + soundtrack +
+                ", soundtrackType=" + soundtrackType +
                 ", isFavorite=" + isFavorite +
                 '}';
     }
@@ -92,12 +92,12 @@ public class ChannelInfo implements Parcelable {
         this.signal = signal;
     }
 
-    public int getSoundtrack() {
-        return soundtrack;
+    public int getSoundtrackType() {
+        return soundtrackType;
     }
 
-    public void setSoundtrack(int soundtrack) {
-        this.soundtrack = soundtrack;
+    public void setSoundtrackType(int soundtrackType) {
+        this.soundtrackType = soundtrackType;
     }
 
     public boolean isFavorite() {

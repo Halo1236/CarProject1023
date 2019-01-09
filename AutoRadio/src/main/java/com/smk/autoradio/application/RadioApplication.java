@@ -3,7 +3,7 @@ package com.smk.autoradio.application;
 import android.app.Application;
 import android.content.Context;
 
-import com.smk.autoradio.manager.RadioPlayerProxyManager;
+import com.smk.autoradio.model.RadioProxyModel;
 import com.smk.autoradio.utils.Logutil;
 
 public class RadioApplication extends Application {
@@ -23,6 +23,6 @@ public class RadioApplication extends Application {
 
     private void initBindRadioService(){
         Logutil.i(TAG,"initBindRadioService() ...");
-        RadioPlayerProxyManager.getInstance().init(mCtx).bindRadioService();
+        RadioProxyModel.getInstance().init(mCtx).bindRadioService();
     }
 }
