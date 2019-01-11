@@ -1,5 +1,7 @@
 package com.smk.autoradio.service.player;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -8,14 +10,21 @@ import android.os.RemoteException;
 import com.semisky.autoservice.aidl.INationalRegionChanged;
 import com.semisky.autoservice.aidl.IRadioSearchListener;
 import com.semisky.autoservice.aidl.IRadioSeekListener;
-import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.RadioManager;
+import com.smk.autoradio.aidl.ChannelInfo;
+import com.smk.autoradio.application.RadioApplication;
 import com.smk.autoradio.constants.RadioConst;
+import com.smk.autoradio.model.SmkIVIManager;
 import com.smk.autoradio.utils.Logutil;
 import com.smk.autoradio.utils.PreferencesUtil;
 
-import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_PLAY_AM;
-import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_PLAY_FM;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_FULL_SEARCH;
+import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_NEXT_STRONG_CHANNEL;
+import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_PLAY_CHANNEL;
+import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_PREV_STRONG_CHANNEL;
 import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_RESTORE_PLAY;
 import static com.smk.autoradio.constants.RadioConst.RadioCmd.CMD_STOP_SEARCH;
 
@@ -23,9 +32,17 @@ public class RadioPlayer implements IRadioPlayer {
 
     private static final String TAG = Logutil.makeTagLog(RadioPlayer.class);
     private OnRadioPlayerStatusListener mOnRadioPlayerStatusListener;
-    private int mCurrentChannelType = RadioConst.CHANNEL_TYPE_FM1;// 当前频道类型
+    private List<ChannelInfo> mFullSearchChannelInfoList = new ArrayList<ChannelInfo>();
+
+    private int mCurrentNationalRegion = -1;// 当前收音机区域
+    private int mCurrentChannelType = -1;// 当前频道类型
+    private int mCurrentSoundtrack = RadioConst.SOUNDTRACK_TYPE_INVALID;// 当前声道类型
+    private int mChannelMin = -1;// 频段最小值
+    private int mChannelMax = -1;// 频段最大值
+
     private boolean mIsFullSearchChannel = false;// 是否在全搜
     private boolean mIsStrongChannelSearch = false;// 是否在强台搜索
+    private boolean mIsInterruptSearch = false;// 是否打断搜索
 
 
     public RadioPlayer() {
@@ -41,19 +58,29 @@ public class RadioPlayer implements IRadioPlayer {
         @Override
         public void onSearchResult(int type, int freq, int signal, int soundtrack) throws RemoteException {
 
-            switch (type) {
-                case RadioManager.CMD_FM_SEARCH_REPORT:// 全搜时，上报FM频段信息
-                    if (null != mOnRadioPlayerStatusListener) {
-                        mOnRadioPlayerStatusListener.onFullSearchChannelReport(freq);
-                    }
-                    break;
-                case RadioManager.CMD_AM_SEARCH_REPORT:// 全搜时，上报AM频段信息
-                    if (null != mOnRadioPlayerStatusListener) {
-                        mOnRadioPlayerStatusListener.onFullSearchChannelReport(freq);
-                    }
-                    break;
+            // 全搜过程中
+            if (RadioManager.CMD_FM_SEARCH_REPORT == type || RadioManager.CMD_AM_SEARCH_REPORT == type) {
+                addChannelToList(new ChannelInfo(freq, mCurrentNationalRegion, mCurrentChannelType, signal, false));
+                if (null != mOnRadioPlayerStatusListener) {
+                    mOnRadioPlayerStatusListener.onFullSearchChannelReport(freq);
+                }
             }
-            if (freq == 0) {// 频道全搜完成
+            // 频道全搜完成
+            if (freq == 0) {
+                // 手动打断全搜，结束搜索事件
+                if (mIsInterruptSearch || mFullSearchChannelInfoList.isEmpty()) {
+                    removeChannelList();
+                    // 播放之前的那个频道
+                    int lastChannel = PreferencesUtil.getLastChannel(mCurrentChannelType);
+                    // 检查频段是否合法
+                    lastChannel = SmkIVIManager.getInstance().reviseChannel(mCurrentNationalRegion,mCurrentChannelType,lastChannel);
+                    sendMsgPlayChannel(mCurrentChannelType,lastChannel);// 播放指定频道
+                    sendCmdToHandlerCenter(RadioConst.RadioCmd.CMD_UNMUTE,0);// 解静音
+                }
+                // 正常频道搜索结束
+                else {
+
+                }
                 if (null != mOnRadioPlayerStatusListener) {
                     mIsFullSearchChannel = false;// 全搜结束标识
                     mOnRadioPlayerStatusListener.onFullSearchChannelEnd();
@@ -61,6 +88,18 @@ public class RadioPlayer implements IRadioPlayer {
             }
         }
     };
+
+    private void addChannelToList(ChannelInfo channelInfo) {
+        synchronized (mFullSearchChannelInfoList) {
+            mFullSearchChannelInfoList.add(channelInfo);
+        }
+    }
+
+    private void removeChannelList() {
+        synchronized (mFullSearchChannelInfoList) {
+            mFullSearchChannelInfoList.clear();
+        }
+    }
 
     // 收音机区域改变监听
     private INationalRegionChanged.Stub mINationalRegionChanged = new INationalRegionChanged.Stub() {
@@ -100,7 +139,7 @@ public class RadioPlayer implements IRadioPlayer {
 
     @Override
     public void reqRestoreChannelPlay() {
-        sendMessage(CMD_RESTORE_PLAY, 0);
+        sendCmdToHandlerCenter(CMD_RESTORE_PLAY, 0);
     }
 
     @Override
@@ -150,7 +189,9 @@ public class RadioPlayer implements IRadioPlayer {
 
     @Override
     public void reqSettingEQ() {
-
+        Intent i = new Intent();
+        i.setClassName("xxx", "xxx");
+        RadioApplication.getContext().startActivity(i);
     }
 
     @Override
@@ -175,7 +216,17 @@ public class RadioPlayer implements IRadioPlayer {
 
     @Override
     public int getSoundtrackType() {
-        return 0;
+        return this.mCurrentSoundtrack;
+    }
+
+    @Override
+    public int getMinChannelValue() {
+        return this.mChannelMin;
+    }
+
+    @Override
+    public int getMaxChannelValue() {
+        return this.mChannelMax;
     }
 
     // utils
@@ -192,7 +243,25 @@ public class RadioPlayer implements IRadioPlayer {
         }
     }
 
-    private void sendMessage(int what, long delayMillis) {
+    // 发送消息播放指定频道
+    private void sendMsgPlayChannel(int ChannelType,int channel){
+        Message msg = mHandler.obtainMessage(RadioConst.RadioCmd.CMD_PLAY_CHANNEL);
+        msg.arg1 = ChannelType;
+        msg.arg2 = channel;
+        mHandler.sendMessageDelayed(msg,0);
+    }
+
+    // 请求全搜消息
+    private void sendMessageFullSearchChannel(int channelType) {
+        Message msg = mHandler.obtainMessage();
+        msg.what = RadioConst.RadioCmd.CMD_FULL_SEARCH;
+        msg.arg1 = channelType;
+        mHandler.sendMessageDelayed(msg, 0);
+
+    }
+
+    // 发送指令到处理中心
+    private void sendCmdToHandlerCenter(int what, long delayMillis) {
         mHandler.removeMessages(what);
         mHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
@@ -209,12 +278,31 @@ public class RadioPlayer implements IRadioPlayer {
                 case CMD_RESTORE_PLAY:
                     restorePlay();
                     break;
-                case CMD_PLAY_FM:
-                    break;
-                case CMD_PLAY_AM:
+                case CMD_PLAY_CHANNEL:
+                    SmkIVIManager.getInstance().reqPlayChannel(msg.arg1,msg.arg2);
                     break;
                 case CMD_STOP_SEARCH:
-                    RadioManager.getInstance().StopSearch();
+                    mIsInterruptSearch = true;// 打断搜台标识
+                    SmkIVIManager.getInstance().reqStopSearch();
+                    break;
+                case CMD_FULL_SEARCH:
+                    if (!isChannelSearching()) {
+                        SmkIVIManager.getInstance().reqFullSearchChannel(msg.arg1);
+                        if (null != mOnRadioPlayerStatusListener) {
+                            mIsFullSearchChannel = true;// 全搜开始标识
+                            mOnRadioPlayerStatusListener.onFullSearchChannelStart();
+                        }
+                    }
+                    break;
+                case CMD_PREV_STRONG_CHANNEL:
+                    if (!isChannelSearching()) {
+                        SmkIVIManager.getInstance().reqPrevStrongChannel(msg.arg1);
+                    }
+                    break;
+                case CMD_NEXT_STRONG_CHANNEL:
+                    if (!isChannelSearching()) {
+                        SmkIVIManager.getInstance().reqNextStrongChannel(msg.arg1);
+                    }
                     break;
             }
             return false;
@@ -223,90 +311,63 @@ public class RadioPlayer implements IRadioPlayer {
 
     // 恢复收音机播放
     private void restorePlay() {
-
-        int lastNationalRegion = PreferencesUtil.getLastNationalRegion();// 断点收音机区域标识
-        int nationalRegion = RadioManager.getInstance().getNationalRegion();// 中间件收音机区域标识
-        // 检查收音机区域是否合法，如果不合格赋值默认收音机区域
-        nationalRegion = (nationalRegion >= AutoConstants.NationalRegion.CHINA &&
-                nationalRegion <= AutoConstants.NationalRegion.RUSSIA
-                ? nationalRegion : AutoConstants.NationalRegion.CHINA);
-
         boolean isFirstOpenRadio = PreferencesUtil.isFirstOpenRadio();// 是否首次打开收音机
-
+        Logutil.i(TAG, "restorePlay() isFirstOpenRadio : " + isFirstOpenRadio);
         // 首次使用收音机
         if (isFirstOpenRadio) {
-            fullSearchChannel(RadioConst.CHANNEL_TYPE_FM1);// 开始全搜
-            PreferencesUtil.saveFirstOpenRadioFlag(false);// 将首次使用收音机置为FALSE
-            PreferencesUtil.saveLastNationalRegion(nationalRegion);
+            firstPlayRadio();
             return;
         }
 
-        // 收音机区域变化
-        boolean isNationalRegionChanged = lastNationalRegion == nationalRegion;// 是不收音机区域改变
-        if (isNationalRegionChanged) {
+        // 收音机区域改变
+        int lastNationalRegion = PreferencesUtil.getLastNationalRegion();// 断点收音机区域标识
+        int nationalRegion = SmkIVIManager.getInstance().getNationalRegion();// 中间件收音机区域
+        boolean isNationalRegionChanged = (lastNationalRegion != nationalRegion);// 是否收音机区域改变
 
+        Logutil.i(TAG, "restorePlay() lastNationalRegion : " + lastNationalRegion);
+        Logutil.i(TAG, "restorePlay() nationalRegion : " + nationalRegion);
+        Logutil.i(TAG, "restorePlay() isNationalRegionChanged : " + isNationalRegionChanged);
+
+        if (isNationalRegionChanged) {
+            playDefaultFMChannelWithNationalRegionChanaged();
+            //1.)将FM1,FM2,AM频道清单清空(数据库及类成员频道集合全部清空)
+            //2.)通知界面进度条更新频道范围
+            //3.)播放该收音机区域的FM1最小频道
+            //4.)频道声道类型、远近程类型、频道类型、收藏更新状态
             return;
         }
 
         // 恢复播放断点收音机
     }
 
+    // 当然收音机区域改变，播放默认FM频道
+    private void playDefaultFMChannelWithNationalRegionChanaged() {
 
-    // 全搜
-    private void fullSearchChannel(int channelType) {
-        switch (channelType) {
-            case RadioConst.CHANNEL_TYPE_FM1:
-                RadioManager.getInstance().FMSearch(0);
-                break;
-            case RadioConst.CHANNEL_TYPE_FM2:
-                RadioManager.getInstance().FMSearch(0);
-                break;
-            case RadioConst.CHANNEL_TYPE_AM:
-                RadioManager.getInstance().AMSearch(0);
-                break;
+    }
+
+    // 首次播放收音机
+    private void firstPlayRadio() {
+        this.mCurrentNationalRegion = SmkIVIManager.getInstance().getNationalRegion(); // 初始化收音机区域
+        this.mCurrentChannelType = SmkIVIManager.getInstance().getDefaultChannelTypeForNationalRegion(mCurrentNationalRegion);// 默认频道类型为FM
+        this.mChannelMin = SmkIVIManager.getInstance().getChannelRangeForNationalRegionAndChannelType(false, mCurrentNationalRegion, mCurrentChannelType);// 获取频道最小值
+        this.mChannelMax = SmkIVIManager.getInstance().getChannelRangeForNationalRegionAndChannelType(true, mCurrentNationalRegion, mCurrentChannelType);// 获取频道最大值
+        int soundtrackType = SmkIVIManager.getInstance().getSoundtrackType(mCurrentChannelType);// 声道类型
+        int dxLocType = SmkIVIManager.getInstance().getDxLocType(mCurrentChannelType);// 远近程类型
+
+        if (null != mOnRadioPlayerStatusListener) {
+            mOnRadioPlayerStatusListener.onChannelTypeChanged(mCurrentChannelType);// 频道类型改变通知
+            mOnRadioPlayerStatusListener.onChannelRangeChanged(mChannelMin, mChannelMax);// 频道范围改变通知
+            mOnRadioPlayerStatusListener.onChannelSoundtrackTypeChanged(soundtrackType);// 声道类型改变通知
+            mOnRadioPlayerStatusListener.onChannelDxLocTypeChanged(dxLocType);// 远近程类型改变通知
         }
-
-        if (channelType >= RadioConst.CHANNEL_TYPE_FM1 && channelType <= RadioConst.CHANNEL_TYPE_AM) {
-            if (null != mOnRadioPlayerStatusListener) {
-                this.mIsFullSearchChannel = true;// 全搜开始标识
-                mOnRadioPlayerStatusListener.onFullSearchChannelStart();
-            }
-        }
-    }
-
-    // 播放指定频道
-    private void playChannel(int channelType,int channel){
-        switch (channelType) {
-            case RadioConst.CHANNEL_TYPE_FM1:
-                RadioManager.getInstance().FMSearch(channel);
-                break;
-            case RadioConst.CHANNEL_TYPE_FM2:
-                RadioManager.getInstance().FMSearch(channel);
-                break;
-            case RadioConst.CHANNEL_TYPE_AM:
-                RadioManager.getInstance().AMSearch(channel);
-                break;
-        }
-    }
-
-    // 下个强台
-    private void nextStrongChannel(int channel){
-        RadioManager.getInstance().SeekUp(channel);
-    }
-
-    // 上个强台
-    private void prevStrongChannel(int channel){
-        RadioManager.getInstance().SeekDown(channel);
+        PreferencesUtil.saveFirstOpenRadioFlag(false);// 置为不是首次打开收音机标识
+        sendMessageFullSearchChannel(mCurrentChannelType);// 启动全搜
     }
 
 
-    private void handlerRadioInterupt(){
-        Logutil.i(TAG,"handlerRadioInterupt() mIsFullSearchChannel : "+ mIsFullSearchChannel);
-        Logutil.i(TAG,"handlerRadioInterupt() mIsStrongChannelSearch : "+ mIsStrongChannelSearch);
-        if(mIsFullSearchChannel || mIsStrongChannelSearch){
-            sendMessage(CMD_STOP_SEARCH,0);
-        }
+    // 是否频道搜索状态
+    private boolean isChannelSearching() {
+        return (mIsFullSearchChannel || mIsStrongChannelSearch);
     }
-
 
 }

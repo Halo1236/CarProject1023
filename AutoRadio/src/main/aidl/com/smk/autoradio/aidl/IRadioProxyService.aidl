@@ -122,5 +122,18 @@ interface IRadioProxyService {
 	 *     {@link RadioConst#SOUNDTRACK_TYPE_STEREO}<br>
 	 */
 	int getSoundtrackType();
+	 /**
+     * 当前最小频道值
+     *
+     * @return 最小频道值
+     */
+    int getMinChannelValue();
+
+    /**
+     * 当前最大频道值
+     *
+     * @return 最大频道值
+     */
+    int getMaxChannelValue();
 
 }

@@ -5,16 +5,16 @@ import android.os.Parcelable;
 
 public class ChannelInfo implements Parcelable {
     private int channel;// 频道
+    private int nationalRegionType;// 收音机区域类型
     private int channelType;// 频道类型
     private int signal;// 信号强度
-    private int soundtrackType;// 声道：立体声，单声道
     private boolean isFavorite;//是收藏数据
 
-    public ChannelInfo(int channel, int channelType, int signal, int soundtrackType, boolean isFavorite) {
+    public ChannelInfo(int channel, int nationalRegionType, int channelType, int signal, boolean isFavorite) {
         this.channel = channel;
+        this.nationalRegionType = nationalRegionType;
         this.channelType = channelType;
         this.signal = signal;
-        this.soundtrackType = soundtrackType;
         this.isFavorite = isFavorite;
     }
 
@@ -28,9 +28,9 @@ public class ChannelInfo implements Parcelable {
         public ChannelInfo createFromParcel(Parcel in) {
             ChannelInfo channelInfo = new ChannelInfo();
             channelInfo.channel = in.readInt();
+            channelInfo.nationalRegionType = in.readInt();
             channelInfo.channelType = in.readInt();
             channelInfo.signal = in.readInt();
-            channelInfo.soundtrackType = in.readInt();
             channelInfo.isFavorite = in.readByte() != 0;
             return channelInfo;
         }
@@ -49,9 +49,9 @@ public class ChannelInfo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(channel);
+        dest.writeInt(nationalRegionType);
         dest.writeInt(channelType);
         dest.writeInt(signal);
-        dest.writeInt(soundtrackType);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 
@@ -60,13 +60,12 @@ public class ChannelInfo implements Parcelable {
     public String toString() {
         return "ChannelInfo{" +
                 "channel=" + channel +
+                ", nationalRegionType=" + nationalRegionType +
                 ", channelType=" + channelType +
                 ", signal=" + signal +
-                ", soundtrackType=" + soundtrackType +
                 ", isFavorite=" + isFavorite +
                 '}';
     }
-
 
     public int getChannel() {
         return channel;
@@ -74,6 +73,14 @@ public class ChannelInfo implements Parcelable {
 
     public void setChannel(int channel) {
         this.channel = channel;
+    }
+
+    public int getNationalRegionType() {
+        return nationalRegionType;
+    }
+
+    public void setNationalRegionType(int nationalRegionType) {
+        this.nationalRegionType = nationalRegionType;
     }
 
     public int getChannelType() {
@@ -90,14 +97,6 @@ public class ChannelInfo implements Parcelable {
 
     public void setSignal(int signal) {
         this.signal = signal;
-    }
-
-    public int getSoundtrackType() {
-        return soundtrackType;
-    }
-
-    public void setSoundtrackType(int soundtrackType) {
-        this.soundtrackType = soundtrackType;
     }
 
     public boolean isFavorite() {

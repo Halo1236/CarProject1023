@@ -15,7 +15,7 @@ import com.smk.autoradio.utils.Logutil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RadioProxyModel extends IRadioProxyService.Stub{
+public class RadioProxyModel extends IRadioProxyService.Stub {
     private static final String TAG = Logutil.makeTagLog(RadioProxyModel.class);
     private static RadioProxyModel _INSTANCE;
     private IRadioProxyService mService;
@@ -257,10 +257,10 @@ public class RadioProxyModel extends IRadioProxyService.Stub{
     }
 
     @Override
-    public void reqPlayChannel(int channelType,int channel) {
+    public void reqPlayChannel(int channelType, int channel) {
         if (isConnected()) {
             try {
-                this.mService.reqPlayChannel(channelType,channel);
+                this.mService.reqPlayChannel(channelType, channel);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -343,5 +343,29 @@ public class RadioProxyModel extends IRadioProxyService.Stub{
             }
         }
         return RadioConst.SOUNDTRACK_TYPE_INVALID;
+    }
+
+    @Override
+    public int getMinChannelValue() {
+        if (isConnected()) {
+            try {
+                return this.mService.getMinChannelValue();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int getMaxChannelValue() {
+        if (isConnected()) {
+            try {
+                return this.mService.getMaxChannelValue();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
     }
 }

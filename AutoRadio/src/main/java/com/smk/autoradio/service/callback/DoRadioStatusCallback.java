@@ -20,8 +20,9 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
     private final int onLoadFullSearchChannelList = 6;
     private final int onLoadFavoriteChannelList = 7;
     private final int onChannelTypeChanged = 8;
-    private final int onChannelSoundtrackTypeChanged = 9;
-    private final int onChannelDxLocTypeChanged = 10;
+    private final int onChannelRangeChanged = 9;
+    private final int onChannelSoundtrackTypeChanged = 10;
+    private final int onChannelDxLocTypeChanged = 11;
 
 
     public DoRadioStatusCallback() {
@@ -62,6 +63,8 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
                 break;
             case onChannelTypeChanged:
                 notifyChannelTypeChanged(msg.arg1);
+                break;
+            case onChannelRangeChanged:
                 break;
             case onChannelSoundtrackTypeChanged:
                 notifyChannelSoundtrackTypeChanged(msg.arg1);
@@ -130,10 +133,16 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
         super.enqueueMessage(msg);
     }
 
-    // onChannelDxLocChanged
     public synchronized void onChannelDxLocTypeChanged(int channelDxLocType) {
         Message msg = super.getMessage(onChannelDxLocTypeChanged);
         msg.arg1 = channelDxLocType;
+        super.enqueueMessage(msg);
+    }
+
+    public synchronized void onChannelRangeChanged(int channelValueMin, int channelValueMax) {
+        Message msg = super.getMessage(onChannelRangeChanged);
+        msg.arg1 = channelValueMin;
+        msg.arg2 = channelValueMax;
         super.enqueueMessage(msg);
     }
 
@@ -277,6 +286,22 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
             }
         } catch (Exception e) {
             Logutil.e(TAG, "notifyChannelTypeChanged() fail !!!");
+            e.printStackTrace();
+        }
+    }
+
+    // 频道范围改变通知
+    private void notifyChannelRangeChanged(int channelValueMin, int channelValueMax) {
+        try {
+            synchronized (super.mRemoteCallbackList) {
+                final int N = super.mRemoteCallbackList.beginBroadcast();
+                for (int i = 0; i < N; i++) {
+                    super.mRemoteCallbackList.getBroadcastItem(i).onChannelRangeChanged(channelValueMin, channelValueMax);
+                }
+                super.mRemoteCallbackList.finishBroadcast();
+            }
+        } catch (Exception e) {
+            Logutil.e(TAG, "notifyChannelRangeChanged() fail !!!");
             e.printStackTrace();
         }
     }

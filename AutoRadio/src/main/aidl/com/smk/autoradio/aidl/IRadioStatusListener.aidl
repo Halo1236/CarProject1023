@@ -67,6 +67,14 @@ interface IRadioStatusListener {
      *     {@link RadioConst#CHANNEL_TYPE_AM}<br>
      */
     void onChannelTypeChanged(int channelType);
+
+     /**
+     * 频率范围改变
+     *
+     * @param channelValueMin 频道最小值
+     * @param channelValueMax 频道最大值
+     */
+    void onChannelRangeChanged(int channelValueMin, int channelValueMax);
 	/**
 	 * 声道类型改变
 	 * 

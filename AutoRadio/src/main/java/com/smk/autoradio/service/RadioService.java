@@ -60,7 +60,8 @@ public class RadioService extends Service {
             this.mIRadioPlayer.registerOnRadioPlayerStatusListener(mOnRadioPlayerStatusListener);
         }
 
-        private IRadioPlayer.OnRadioPlayerStatusListener mOnRadioPlayerStatusListener = new IRadioPlayer.OnRadioPlayerStatusListener() {
+        private IRadioPlayer.OnRadioPlayerStatusListener mOnRadioPlayerStatusListener
+                = new IRadioPlayer.OnRadioPlayerStatusListener() {
             @Override
             public void onFullSearchChannelStart() {
                 mDoRadioStatusCallback.onFullSearchChannelStart();
@@ -104,6 +105,11 @@ public class RadioService extends Service {
             @Override
             public void onChannelTypeChanged(int channelType) {
                 mDoRadioStatusCallback.onChannelTypeChanged(channelType);
+            }
+
+            @Override
+            public void onChannelRangeChanged(int channelValueMin, int channelValueMax) {
+                mDoRadioStatusCallback.onChannelRangeChanged(channelValueMin, channelValueMax);
             }
 
             @Override
@@ -206,6 +212,16 @@ public class RadioService extends Service {
         @Override
         public int getSoundtrackType() throws RemoteException {
             return mIRadioPlayer.getSoundtrackType();
+        }
+
+        @Override
+        public int getMinChannelValue() throws RemoteException {
+            return mIRadioPlayer.getMinChannelValue();
+        }
+
+        @Override
+        public int getMaxChannelValue() throws RemoteException {
+            return mIRadioPlayer.getMaxChannelValue();
         }
     }
 
