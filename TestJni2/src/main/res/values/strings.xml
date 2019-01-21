@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TestJni2</string>
+    <string name="btn_click_text">点我有惊喜</string>
+</resources>
