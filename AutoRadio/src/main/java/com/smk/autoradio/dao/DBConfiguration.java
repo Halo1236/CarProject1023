@@ -7,8 +7,8 @@ public class DBConfiguration {
     public static final int DATABASE_VERSION = 1;// 数据库版本
 
     public class ChannelConfiguration implements BaseColumns {
-        public static final String TABLE_NAME_SEARCH = "SearchTable";// 全搜表
-        public static final String TABLE_NAME_FAVORITE = "FavoriteTable";// 收藏表
+        public static final String TABLE_NAME_FULL_SEARCH_CHANNEL = "ChannelFullSearchTable";// 全搜表名
+        public static final String TABLE_NAME_FAVORITE_CHANNEL = "ChannelFavoriteTable";// 收藏表名
         public static final String _CAHNNEL = "channel";// 频道
         /**
          * 频道类型
