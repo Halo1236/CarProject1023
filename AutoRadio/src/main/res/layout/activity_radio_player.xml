@@ -20,27 +20,27 @@
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
-            android:text="BAND" />
+            android:text="@string/btn_switch_band_text" />
 
         <Button
             android:id="@+id/btn_set_eq"
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
-            android:text="EQ" />
+            android:text="@string/btn_set_eq_text" />
 
         <Button
             android:id="@+id/btn_scan"
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
-            android:text="SCAN" />
+            android:text="@string/btn_scan_text" />
 
         <Button
             android:id="@+id/btn_switch_loc_or_dx"
             android:layout_width="120dp"
             android:layout_height="match_parent"
-            android:text="DX" />
+            android:text="@string/btn_switch_loc_or_dx_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,13 +55,13 @@
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_marginRight="50dp"
-            android:text="PREV" />
+            android:text="@string/btn_prev_text" />
 
         <Button
             android:id="@+id/btn_next"
             android:layout_width="120dp"
             android:layout_height="match_parent"
-            android:text="next" />
+            android:text="@string/btn_next_text" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">AutoRadio</string>
+    <!--测试界面字段 btn_favorite_am_channel-->
+    <string name="btn_enter_list_text">进入列表</string>
+    <string name="btn_batch_add_fm_channel_text">批量存储FM频道</string>
+    <string name="btn_batch_add_am_channel_text">批量存储AM频道</string>
+    <string name="btn_favorite_fm_channel_text">收藏FM频道</string>
+    <string name="btn_favorite_am_channel_text">收藏AM频道</string>
+    <string name="btn_del_full_search_fm_channel_text">删除全搜FM频道清单</string>
+    <string name="btn_del_full_search_am_channel_text">删除全搜AM频道清单</string>
+    <string name="btn_del_favorite_fm_channel_text">删除收藏FM频道清单</string>
+    <string name="btn_del_favorite_am_channel">删除收藏AM频道清单</string>
+    <string name="btn_del_all_full_search_text">删除所有频道类型全搜清单</string>
+    <string name="btn_del_all_favorite_text">删除所有频道类型收藏清单</string>
+    <string name="btn_back_text">返回</string>
+    <string name="btn_query_fm_full_search_channel_text">查询FM全搜数据</string>
+    <string name="btn_query_am_full_search_channel_text">查询AM全搜数据</string>
+    <string name="btn_query_fm_favorite_list_lab_text">查询FM收藏数据</string>
+    <string name="btn_query_am_favorite_list_lab_text">查询AM收藏数据</string>
+    <!--radio 播放界面-->
+    <string name="btn_switch_band_text">BAND</string>
+    <string name="btn_set_eq_text">EQ</string>
+    <string name="btn_scan_text">SCAN</string>
+    <string name="btn_switch_loc_or_dx_text">DX</string>
+    <string name="btn_prev_text">PREV</string>
+    <string name="btn_next_text">NEXT</string>
 </resources>

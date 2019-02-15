@@ -15,35 +15,35 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="返回" />
+            android:text="@string/btn_back_text" />
 
         <Button
             android:id="@+id/btn_query_fm_full_search_channel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="查询FM全搜数据" />
+            android:text="@string/btn_query_fm_full_search_channel_text" />
 
         <Button
             android:id="@+id/btn_query_am_full_search_channel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="查询AM全搜数据" />
+            android:text="@string/btn_query_am_full_search_channel_text" />
 
         <Button
             android:id="@+id/btn_query_fm_favorite_list_lab"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="查询FM收藏数据" />
+            android:text="@string/btn_query_fm_favorite_list_lab_text" />
 
         <Button
             android:id="@+id/btn_query_am_favorite_list_lab"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="查询AM收藏数据" />
+            android:text="@string/btn_query_am_favorite_list_lab_text" />
     </LinearLayout>
 
     <ListView
