@@ -40,22 +40,19 @@ interface IRadioStatusListener {
 
 	/**
 	 * 加载全搜存台清单列表
-	 * @param channelType 频段类型<br>
-	 *     {@link RadioConst#CHANNEL_TYPE_FM1}<br>
-     *     {@link RadioConst#CHANNEL_TYPE_FM2}<br>
-     *     {@link RadioConst#CHANNEL_TYPE_AM}<br>
 	 * @param channelList 频道集合<br>
 	 */
-	void onLoadFullSearchChannelList(int channelType,in List<ChannelInfo> channelList);
+	void onLoadFullSearchChannelList(in List<ChannelInfo> channelList);
 	/**
 	* 加载收藏清单列表
-	* @param channelType 频段类型<br>
-	 *     {@link RadioConst#CHANNEL_TYPE_FM1}<br>
-     *     {@link RadioConst#CHANNEL_TYPE_FM2}<br>
-     *     {@link RadioConst#CHANNEL_TYPE_AM}<br>
 	* @param channelList 频道集合<br>
 	* */
-	void onLoadFavoriteChannelList(int channelType,in List<ChannelInfo> channelList);
+	void onLoadFavoriteChannelList(in List<ChannelInfo> channelList);
+	/**
+	* 加载全搜与收藏频道合集到一块集合清单
+	* @param channelList 频道集合<br>
+	*/
+	void onLoadFullSearchAndFavoriteChannelList(in List<ChannelInfo> channelList);
 
 
 	/**
@@ -67,7 +64,6 @@ interface IRadioStatusListener {
      *     {@link RadioConst#CHANNEL_TYPE_AM}<br>
      */
     void onChannelTypeChanged(int channelType);
-
      /**
      * 频率范围改变
      *

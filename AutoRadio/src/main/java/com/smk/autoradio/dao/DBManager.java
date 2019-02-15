@@ -133,34 +133,46 @@ public class DBManager implements IDBManager {
     @Override
     public int deleteFullSeachChannel(int channelType) {
         synchronized (mWritableDatabase) {
-            return getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FULL_SEARCH_CHANNEL,
+            int result = getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FULL_SEARCH_CHANNEL,
                     DBConfiguration.ChannelConfiguration._CAHNNEL_TYPE + " = ?",
                     new String[]{channelType + ""});
+            reqResetSqliteSequence(getDB(),DBConfiguration.ChannelConfiguration.TABLE_NAME_FULL_SEARCH_CHANNEL);
+            return result;
         }
     }
 
     @Override
     public int deleteAllFullSeachChannel() {
         synchronized (mWritableDatabase) {
-            return getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FULL_SEARCH_CHANNEL,
+            int result = getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FULL_SEARCH_CHANNEL,
                     null,
                     null);
+            reqResetSqliteSequence(getDB(),DBConfiguration.ChannelConfiguration.TABLE_NAME_FULL_SEARCH_CHANNEL);
+            return result;
         }
     }
 
     @Override
     public int deleteFavoriteChannel(int channelType) {
         synchronized (mWritableDatabase) {
-            return getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FAVORITE_CHANNEL,
+            int result = getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FAVORITE_CHANNEL,
                     DBConfiguration.ChannelConfiguration._CAHNNEL_TYPE + " = ?", new String[]{channelType + ""});
+            reqResetSqliteSequence(getDB(),DBConfiguration.ChannelConfiguration.TABLE_NAME_FAVORITE_CHANNEL);
+            return result;
         }
     }
 
     @Override
     public int deleteAllFavoriteChannel() {
         synchronized (mWritableDatabase) {
-            return getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FAVORITE_CHANNEL,
+            int result = getDB().delete(DBConfiguration.ChannelConfiguration.TABLE_NAME_FAVORITE_CHANNEL,
                     null, null);
+            reqResetSqliteSequence(getDB(),DBConfiguration.ChannelConfiguration.TABLE_NAME_FAVORITE_CHANNEL);
+            return result;
         }
+    }
+
+    void reqResetSqliteSequence(SQLiteDatabase db,String tableName){
+        db.execSQL("update sqlite_sequence set seq = 0 where name = '" + tableName + "'");
     }
 }

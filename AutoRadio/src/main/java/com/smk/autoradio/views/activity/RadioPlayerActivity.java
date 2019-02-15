@@ -82,27 +82,27 @@ public class RadioPlayerActivity extends BaseActivity<IRadioPlayerView, RadioPla
     }
 
     @Override
-    public void changeChannelType(int type) {
+    public void onChangeChannelType(int type) {
 
     }
 
     @Override
-    public void changeFavorite(boolean isFavorite) {
+    public void onChangeFavorite(boolean isFavorite) {
 
     }
 
     @Override
-    public void changeSoundtrack(int soundtrackType) {
+    public void onChangeSoundtrack(int soundtrackType) {
 
     }
 
     @Override
-    public void changeDxLocType(int type) {
+    public void onChangeDxLocType(int type) {
 
     }
 
     @Override
-    public void changeChannelList(List<ChannelInfo> channelList) {
+    public void onChangeChannelList(List<ChannelInfo> channelList) {
 
     }
 }

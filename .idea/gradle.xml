@@ -9,8 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AutoRadio" />
-            <option value="$PROJECT_DIR$/DialogDemo" />
-            <option value="$PROJECT_DIR$/TestJni2" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

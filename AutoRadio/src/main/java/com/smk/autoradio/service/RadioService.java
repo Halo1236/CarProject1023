@@ -93,13 +93,18 @@ public class RadioService extends Service {
             }
 
             @Override
-            public void onLoadFullSearchChannelList(int channelType, List<ChannelInfo> channelList) {
-                mDoRadioStatusCallback.onLoadFullSearchChannelList(channelType, channelList);
+            public void onLoadFullSearchChannelList(List<ChannelInfo> channelList) {
+                mDoRadioStatusCallback.onLoadFullSearchChannelList(channelList);
             }
 
             @Override
-            public void onLoadFavoriteChannelList(int channelType, List<ChannelInfo> channelList) {
-                mDoRadioStatusCallback.onLoadFavoriteChannelList(channelType, channelList);
+            public void onLoadFavoriteChannelList(List<ChannelInfo> channelList) {
+                mDoRadioStatusCallback.onLoadFavoriteChannelList(channelList);
+            }
+
+            @Override
+            public void onLoadFullSearchAndFavoriteChannelList(List<ChannelInfo> channelList) {
+                mDoRadioStatusCallback.onLoadFullSearchAndFavoriteChannelList(channelList);
             }
 
             @Override
@@ -195,13 +200,18 @@ public class RadioService extends Service {
         }
 
         @Override
-        public void reqGetFavoriteList(int channelType) throws RemoteException {
-            mIRadioPlayer.reqGetFavoriteList(channelType);
+        public void reqGetFavoriteList() throws RemoteException {
+            mIRadioPlayer.reqGetFavoriteList();
         }
 
         @Override
-        public void reqGetSearchList(int channelType) throws RemoteException {
-            mIRadioPlayer.reqGetSearchList(channelType);
+        public void reqGetFullSearchList() throws RemoteException {
+            mIRadioPlayer.reqGetSearchList();
+        }
+
+        @Override
+        public void reqGetFullSearchAndFavoriteChannelList() throws RemoteException {
+
         }
 
         @Override

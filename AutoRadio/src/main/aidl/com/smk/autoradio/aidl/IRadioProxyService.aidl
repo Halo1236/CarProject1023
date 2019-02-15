@@ -11,7 +11,7 @@ interface IRadioProxyService {
 	 */
 	void registerOnRadioStatusListener(IRadioStatusListener l);
 	/**
-	 * 注册监听收音机状态变化
+	 * 反注册监听收音机状态变化
 	 * 
 	 * @param l
 	 */
@@ -32,7 +32,7 @@ interface IRadioProxyService {
 	int getChannelType();
 
 	/**
-	 * 根据频段类型获取频点
+	 * 获取频点
 	 * 
 	 * @return
 	 */
@@ -92,21 +92,18 @@ interface IRadioProxyService {
 
 	/**
 	 * 获取收藏清单列表
-	 * @param channelType 频道类型<br>
-	 *     {@link RadioConst#CHANNEL_TYPE_FM1}<br>
-	 *     {@link RadioConst#CHANNEL_TYPE_FM2}<br>
-	 *     {@link RadioConst#CHANNEL_TYPE_AM}<br>
 	 */
-	void reqGetFavoriteList(int channelType);
+	void reqGetFavoriteList();
 
 	/**
 	 * 获取全搜频道清单列表
-	 * @param channelType 频道类型
-	 *     {@link RadioConst#CHANNEL_TYPE_FM1}<br>
-     *     {@link RadioConst#CHANNEL_TYPE_FM2}<br>
-     *     {@link RadioConst#CHANNEL_TYPE_AM}<br>
 	 */
-	void reqGetSearchList(int channelType);
+	void reqGetFullSearchList();
+
+    /**
+     * 请求获取全搜与收藏频道合集到一块集合清单
+     */
+	void reqGetFullSearchAndFavoriteChannelList();
 
 	/**
 	 * 切换远近程

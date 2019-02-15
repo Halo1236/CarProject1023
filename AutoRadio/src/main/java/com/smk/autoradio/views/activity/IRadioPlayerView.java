@@ -12,16 +12,16 @@ public interface IRadioPlayerView {
      * {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_AM}<br>
      * {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_INVALID}<br>
      *
-     * @param type
+     * @param channelType
      */
-    void changeChannelType(int type);
+    void onChangeChannelType(int channelType);
 
     /**
      * 收藏状态改变
      *
      * @param isFavorite
      */
-    void changeFavorite(boolean isFavorite);
+    void onChangeFavorite(boolean isFavorite);
 
     /**
      * 声道类型改变<br>
@@ -31,22 +31,22 @@ public interface IRadioPlayerView {
      *
      * @param soundtrackType
      */
-    void changeSoundtrack(int soundtrackType);
+    void onChangeSoundtrack(int soundtrackType);
 
     /**
      * 远近程类型<br>
-     * {@link com.smk.autoradio.constants.RadioConst#SIGNAL_TYPE_INVALID}<br>
-     * {@link com.smk.autoradio.constants.RadioConst#SIGNAL_TYPE_DX}<br>
-     * {@link com.smk.autoradio.constants.RadioConst#SIGNAL_YTPE_LOC}<br>
+     * {@link com.smk.autoradio.constants.RadioConst#CHANNEL_DX_LOC_TYPE_INVALID}<br>
+     * {@link com.smk.autoradio.constants.RadioConst#CHANNEL_DX_LOC_TYPE_DX}<br>
+     * {@link com.smk.autoradio.constants.RadioConst#CHANNEL_DX_LOC_TYPE_LOC}<br>
      *
-     * @param type
+     * @param channelDxLocType
      */
-    void changeDxLocType(int type);
+    void onChangeDxLocType(int channelDxLocType);
 
     /**
      * 刷新频道清单列表
      *
      * @param channelList
      */
-    void changeChannelList(List<ChannelInfo> channelList);
+    void onChangeChannelList(List<ChannelInfo> channelList);
 }

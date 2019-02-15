@@ -51,7 +51,7 @@ public interface IDBManager {
     /**
      * 删除指定频道类型，所有全搜频道信息
      *
-     * @param channelType
+     * @param channelType 频道类型
      * @return
      */
     int deleteFullSeachChannel(int channelType);
@@ -66,7 +66,7 @@ public interface IDBManager {
     /**
      * 删除指定频道类型，所有收藏频道信息
      *
-     * @param channelType
+     * @param channelType 频道类型
      * @return
      */
     int deleteFavoriteChannel(int channelType);

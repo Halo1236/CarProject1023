@@ -301,10 +301,10 @@ public class RadioProxyModel extends IRadioProxyService.Stub {
     }
 
     @Override
-    public void reqGetFavoriteList(int channel) {
+    public void reqGetFavoriteList() {
         if (isConnected()) {
             try {
-                this.mService.reqGetFavoriteList(channel);
+                this.mService.reqGetFavoriteList();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -312,10 +312,21 @@ public class RadioProxyModel extends IRadioProxyService.Stub {
     }
 
     @Override
-    public void reqGetSearchList(int channel) {
+    public void reqGetFullSearchList() {
         if (isConnected()) {
             try {
-                this.mService.reqGetSearchList(channel);
+                this.mService.reqGetFullSearchList();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void reqGetFullSearchAndFavoriteChannelList() {
+        if (isConnected()) {
+            try {
+                this.mService.reqGetFullSearchAndFavoriteChannelList();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

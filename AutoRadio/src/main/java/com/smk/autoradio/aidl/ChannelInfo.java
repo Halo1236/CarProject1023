@@ -18,6 +18,13 @@ public class ChannelInfo implements Parcelable {
         this.isFavorite = isFavorite;
     }
 
+    public ChannelInfo(int channel, int channelType, int signal, boolean isFavorite) {
+        this.channel = channel;
+        this.channelType = channelType;
+        this.signal = signal;
+        this.isFavorite = isFavorite;
+    }
+
     public ChannelInfo() {
 
     }

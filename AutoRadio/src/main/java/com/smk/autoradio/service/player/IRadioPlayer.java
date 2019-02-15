@@ -45,26 +45,21 @@ public interface IRadioPlayer {
 
         /**
          * 加载全搜存台清单列表
-         *
-         * @param channelType 频段类型<br>
-         *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM1}<br>
-         *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM2}<br>
-         *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_AM}<br>
          * @param channelList 频道集合<br>
          */
-        void onLoadFullSearchChannelList(int channelType, List<ChannelInfo> channelList);
+        void onLoadFullSearchChannelList(List<ChannelInfo> channelList);
 
         /**
          * 加载收藏清单列表
-         *
-         * @param channelType 频段类型<br>
-         *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM1}<br>
-         *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM2}<br>
-         *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_AM}<br>
          * @param channelList 频道集合<br>
          */
-        void onLoadFavoriteChannelList(int channelType, List<ChannelInfo> channelList);
+        void onLoadFavoriteChannelList(List<ChannelInfo> channelList);
 
+        /**
+         * 加载全搜与收藏频道合集到一块集合清单
+         * @param channelList 频道集合<br>
+         */
+        void onLoadFullSearchAndFavoriteChannelList(List<ChannelInfo> channelList);
 
         /**
          * 频段类型改变
@@ -184,23 +179,18 @@ public interface IRadioPlayer {
 
     /**
      * 获取收藏清单列表
-     *
-     * @param channelType 频道类型<br>
-     *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM1}<br>
-     *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM2}<br>
-     *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_AM}<br>
      */
-    void reqGetFavoriteList(int channelType);
+    void reqGetFavoriteList();
 
     /**
      * 获取全搜频道清单列表
-     *
-     * @param channelType 频道类型
-     *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM1}<br>
-     *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_FM2}<br>
-     *                    {@link com.smk.autoradio.constants.RadioConst#CHANNEL_TYPE_AM}<br>
      */
-    void reqGetSearchList(int channelType);
+    void reqGetSearchList();
+
+    /**
+     * 请求获取全搜与收藏频道合集到一块集合清单
+     */
+    void reqGetFullSearchAndFavoriteChannelList();
 
     /**
      * 切换远近程

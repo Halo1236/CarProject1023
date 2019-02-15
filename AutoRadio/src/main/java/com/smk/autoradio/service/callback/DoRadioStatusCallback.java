@@ -19,10 +19,11 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
     private final int onStrongChannelSearchEnd = 5;
     private final int onLoadFullSearchChannelList = 6;
     private final int onLoadFavoriteChannelList = 7;
-    private final int onChannelTypeChanged = 8;
-    private final int onChannelRangeChanged = 9;
-    private final int onChannelSoundtrackTypeChanged = 10;
-    private final int onChannelDxLocTypeChanged = 11;
+    private final int onLoadFullSearchAndFavoriteChannelList = 8;
+    private final int onChannelTypeChanged = 9;
+    private final int onChannelRangeChanged = 10;
+    private final int onChannelSoundtrackTypeChanged = 11;
+    private final int onChannelDxLocTypeChanged = 12;
 
 
     public DoRadioStatusCallback() {
@@ -56,10 +57,13 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
                 notifyStrongChannelSearchEnd();
                 break;
             case onLoadFullSearchChannelList:
-                notifyLoadFullSearchChannelList(msg.arg1, (List<ChannelInfo>) msg.obj);
+                notifyLoadFullSearchChannelList((List<ChannelInfo>) msg.obj);
                 break;
             case onLoadFavoriteChannelList:
-                notifyLoadFavoriteChannelList(msg.arg1, (List<ChannelInfo>) msg.obj);
+                notifyLoadFavoriteChannelList((List<ChannelInfo>) msg.obj);
+                break;
+            case onLoadFullSearchAndFavoriteChannelList:
+                notifyLoadFullSearchAndFavoriteChannelList((List<ChannelInfo>) msg.obj);
                 break;
             case onChannelTypeChanged:
                 notifyChannelTypeChanged(msg.arg1);
@@ -107,16 +111,20 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
         super.enqueueMessage(msg);
     }
 
-    public synchronized void onLoadFullSearchChannelList(int channelType, List<ChannelInfo> channelList) {
+    public synchronized void onLoadFullSearchChannelList(List<ChannelInfo> channelList) {
         Message msg = super.getMessage(onLoadFullSearchChannelList);
-        msg.arg1 = channelType;
         msg.obj = channelList;
         super.enqueueMessage(msg);
     }
 
-    public synchronized void onLoadFavoriteChannelList(int channelType, List<ChannelInfo> channelList) {
+    public synchronized void onLoadFavoriteChannelList(List<ChannelInfo> channelList) {
         Message msg = super.getMessage(onLoadFavoriteChannelList);
-        msg.arg1 = channelType;
+        msg.obj = channelList;
+        super.enqueueMessage(msg);
+    }
+
+    public synchronized void onLoadFullSearchAndFavoriteChannelList(List<ChannelInfo> channelList){
+        Message msg = super.getMessage(onLoadFavoriteChannelList);
         msg.obj = channelList;
         super.enqueueMessage(msg);
     }
@@ -243,12 +251,12 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
     }
 
     // 加载全搜频段清单列表，根据频道类型
-    private void notifyLoadFullSearchChannelList(int channelListType, List<ChannelInfo> channelList) {
+    private void notifyLoadFullSearchChannelList(List<ChannelInfo> channelList) {
         try {
             synchronized (super.mRemoteCallbackList) {
                 final int N = super.mRemoteCallbackList.beginBroadcast();
                 for (int i = 0; i < N; i++) {
-                    super.mRemoteCallbackList.getBroadcastItem(i).onLoadFullSearchChannelList(channelListType, channelList);
+                    super.mRemoteCallbackList.getBroadcastItem(i).onLoadFullSearchChannelList(channelList);
                 }
                 super.mRemoteCallbackList.finishBroadcast();
             }
@@ -259,17 +267,32 @@ public class DoRadioStatusCallback extends DoBaseCallback<IRadioStatusListener> 
     }
 
     // 加载收藏频段清单列表，根据频道类型
-    private void notifyLoadFavoriteChannelList(int channelListType, List<ChannelInfo> channelList) {
+    private void notifyLoadFavoriteChannelList(List<ChannelInfo> channelList) {
         try {
             synchronized (super.mRemoteCallbackList) {
                 final int N = super.mRemoteCallbackList.beginBroadcast();
                 for (int i = 0; i < N; i++) {
-                    super.mRemoteCallbackList.getBroadcastItem(i).onLoadFavoriteChannelList(channelListType, channelList);
+                    super.mRemoteCallbackList.getBroadcastItem(i).onLoadFavoriteChannelList(channelList);
                 }
                 super.mRemoteCallbackList.finishBroadcast();
             }
         } catch (Exception e) {
             Logutil.e(TAG, "notifyLoadFavoriteChannelList() fail !!!");
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyLoadFullSearchAndFavoriteChannelList(List<ChannelInfo> channelList) {
+        try {
+            synchronized (super.mRemoteCallbackList) {
+                final int N = super.mRemoteCallbackList.beginBroadcast();
+                for (int i = 0; i < N; i++) {
+                    super.mRemoteCallbackList.getBroadcastItem(i).onLoadFullSearchAndFavoriteChannelList(channelList);
+                }
+                super.mRemoteCallbackList.finishBroadcast();
+            }
+        } catch (Exception e) {
+            Logutil.e(TAG, "notifyLoadFullSearchAndFavoriteChannelList() fail !!!");
             e.printStackTrace();
         }
     }

@@ -200,12 +200,17 @@ public class RadioPlayer implements IRadioPlayer {
     }
 
     @Override
-    public void reqGetFavoriteList(int channelType) {
+    public void reqGetFavoriteList() {
 
     }
 
     @Override
-    public void reqGetSearchList(int channelType) {
+    public void reqGetSearchList() {
+
+    }
+
+    @Override
+    public void reqGetFullSearchAndFavoriteChannelList() {
 
     }
 
