@@ -51,8 +51,17 @@ public class BackCarTrackManager {
     }
 
 
-    public void handlerBackCarTraceData(int trackAngle) {
-        Logger.i(TAG, "handlerBackCarTraceData() trackAngle : " + trackAngle);
+    public void handlerBackCarTrackData(int trackAngle) {
+        if(null == _handler){
+            return;
+        }
+        _handler.removeCallbacks(mStartFromLeftToRightRunnabel);
+        _handler.removeCallbacks(mStartFromRightToLeftRunnabel);
+        executeHandlerBackCarTrackData(trackAngle);
+    }
+
+    void executeHandlerBackCarTrackData(int trackAngle) {
+        Logger.i(TAG, "handlerBackCarTrackData() trackAngle : " + trackAngle);
         if (trackAngle < TRACK_ANGLE_STEP) {
             trackAngle = TRACK_ANGLE_STEP;
         }
@@ -96,8 +105,8 @@ public class BackCarTrackManager {
                 mTempTrackAngle = 0;
                 return;
             }
-            handlerBackCarTraceData(mTempTrackAngle);
-            _handler.postDelayed(this, 1000);
+            executeHandlerBackCarTrackData(mTempTrackAngle);
+            _handler.postDelayed(this, 350);
             mTempTrackAngle += TRACK_ANGLE_STEP;
         }
     };
@@ -120,8 +129,8 @@ public class BackCarTrackManager {
                 mTempTrackAngle = TRACK_ANGEL_MAX;
                 return;
             }
-            handlerBackCarTraceData(mTempTrackAngle);
-            _handler.postDelayed(this, 1000);
+            executeHandlerBackCarTrackData(mTempTrackAngle);
+            _handler.postDelayed(this, 350);
             mTempTrackAngle -= TRACK_ANGLE_STEP;
         }
     };

@@ -92,7 +92,7 @@ public class ParkingService extends Service {
                     break;
                 case Definition.CMD_BACK_CAR_LINE_UPDATE:
                     Logger.i(TAG, "CMD_BACK_CAR_LINE_UPDATE ...");
-                    BackCarTrackManager.getInstance().handlerBackCarTraceData(angle);
+                    BackCarTrackManager.getInstance().handlerBackCarTrackData(angle);
                     break;
                 case Definition.CMD_AUTO_LEFT_TO_RIGHT:
                     BackCarTrackManager.getInstance().testFromLeftToRight();
