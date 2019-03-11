@@ -88,6 +88,10 @@ public class BackCarTrackManager {
         this._handler = handler;
     }
 
+    // ##########################################################################################
+    // TEST START
+    // ##########################################################################################
+
     public void testFromLeftToRight() {
         if (_handler == null) {
             return;
@@ -98,7 +102,7 @@ public class BackCarTrackManager {
         _handler.postDelayed(mStartFromLeftToRightRunnabel, 1000);
 
     }
-
+    
     private int mTempTrackAngle = 0;
 
     private Runnable mStartFromLeftToRightRunnabel = new Runnable() {
@@ -137,6 +141,9 @@ public class BackCarTrackManager {
             mTempTrackAngle -= TRACK_ANGLE_STEP;
         }
     };
+    // ##########################################################################################
+    // TEST END
+    // ##########################################################################################
 
 
 }
