@@ -169,7 +169,9 @@ public class ParkingService extends Service {
     private BackCarTrackManager.OnBackCarTrackListener mOnBackCarTrackListener = new BackCarTrackManager.OnBackCarTrackListener() {
         @Override
         public void onBackCarTrackChanged(int backCarTrackType, int index) {
-            Toast.makeText(ParkingService.this, "backCarTrackType=" + backCarTrackType + ", index=" + index, Toast.LENGTH_SHORT).show();
+            Logger.i(TAG, "==================");
+            Logger.i(TAG, "onBackCarTrackChanged() backCarTrackType=" + backCarTrackType + " , index=" + index);
+            Logger.i(TAG, "==================");
             if (null == mParkingDialog) {
                 return;
             }
