@@ -177,7 +177,7 @@ public class ParkingService extends Service {
             }
             switch (backCarTrackType) {
                 case BackCarTrackManager.TYPE_TRACE_LEFT:
-                    mParkingDialog.updateTranck("/storage/udisk0/udisk00/BackCarTraceResource/trace_left/" + (50 - index) + ".bmp");
+                    mParkingDialog.updateTranck("/storage/udisk0/udisk00/BackCarTraceResource/trace_left/" + index + ".bmp");
                     break;
                 case BackCarTrackManager.TYPE_TRACE_MIDDLE:
                     mParkingDialog.updateTranck("/storage/udisk0/udisk00/BackCarTraceResource/trace_middle/" + index + ".bmp");

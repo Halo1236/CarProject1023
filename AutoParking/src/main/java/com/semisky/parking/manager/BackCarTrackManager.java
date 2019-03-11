@@ -17,6 +17,9 @@ public class BackCarTrackManager {
     public static final int MIDDLE_TRACK_ANGLE_MIN = (TRACK_ANGEL_MAX / 2) - TRACK_ANGLE_STEP;// 轨迹中间角度值最小值
     public static final int MIDDLE_TRACK_ANGLE_MAX = (TRACK_ANGEL_MAX / 2) + TRACK_ANGLE_STEP;// 轨迹中间角度值最大值
 
+    private static final int PHOTO_LEFT_TRACK_COUNT = 50;// 左侧轨迹图片总数
+    private static final int PHOTO_RIGHT_TRACK_COUNT = 50;// 右侧轨迹图片总数
+
     public static final int TYPE_TRACE_LEFT = 1;
     public static final int TYPE_TRACE_MIDDLE = 2;
     public static final int TYPE_TRACE_RIGHT = 3;
@@ -52,7 +55,7 @@ public class BackCarTrackManager {
 
 
     public void handlerBackCarTrackData(int trackAngle) {
-        if(null == _handler){
+        if (null == _handler) {
             return;
         }
         _handler.removeCallbacks(mStartFromLeftToRightRunnabel);
@@ -74,10 +77,10 @@ public class BackCarTrackManager {
             notifyBackCarTrackChanged(TYPE_TRACE_MIDDLE, 1);
         } else if (trackAngle < MIDDLE_TRACK_ANGLE_MIN) {
             // 左边倒车轨迹角度
-            notifyBackCarTrackChanged(TYPE_TRACE_LEFT, trackAngle / TRACK_ANGLE_STEP);
+            notifyBackCarTrackChanged(TYPE_TRACE_LEFT, PHOTO_LEFT_TRACK_COUNT - trackAngle / TRACK_ANGLE_STEP);
         } else if (trackAngle > MIDDLE_TRACK_ANGLE_MAX) {
             // 右边倒车轨迹角度
-            notifyBackCarTrackChanged(TYPE_TRACE_RIGHT, (trackAngle - TRACK_ANGEL_MAX / 2) / 156);
+            notifyBackCarTrackChanged(TYPE_TRACE_RIGHT, (trackAngle - TRACK_ANGEL_MAX / 2) / TRACK_ANGLE_STEP);
         }
     }
 
