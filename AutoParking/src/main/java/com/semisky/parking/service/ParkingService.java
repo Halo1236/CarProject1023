@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.widget.Toast;
 
 import com.semisky.autoservice.manager.CarCtrlManager;
+import com.semisky.parking.manager.BackCarTrackManager;
 import com.semisky.parking.manager.ParkingManager.Definition;
 import com.semisky.parking.model.AudioFocusControlModel;
 import com.semisky.parking.utils.Logger;
@@ -30,6 +32,8 @@ public class ParkingService extends Service {
         super.onCreate();
         Logger.i(TAG, "onCreate() ...");
         this.mAudioFocusControlModel = AudioFocusControlModel.getInstance(this);
+        BackCarTrackManager.getInstance().registerOnBackCarTrackListener(mOnBackCarTrackListener);
+        BackCarTrackManager.getInstance().registerHandler(_handler);
     }
 
     @Override
@@ -61,7 +65,8 @@ public class ParkingService extends Service {
         }
         String action = intent.getAction();
         int cmd = intent.getIntExtra(Definition.CMD_PARAM, Definition.CMD_INVALID);
-        Logger.i(TAG, "handlerIntent() action = " + action + ",cmd = " + cmd);
+        int angle = intent.getIntExtra("angle", Definition.CMD_INVALID);
+        Logger.i(TAG, "handlerIntent() action = " + action + ",cmd = " + cmd + ", angle = " + angle);
 
         if (Definition.ACTION_SERVICE_PARKING.equals(action)) {
 
@@ -71,7 +76,7 @@ public class ParkingService extends Service {
 //                    Logger.i(TAG, "CMD_AVM_OFF ...");
 //                    dismissParkingDialog();
                     _handler.removeCallbacksAndMessages(null);
-                    _handler.postDelayed(mTimeoutRunTaskRunnable,200);
+                    _handler.postDelayed(mTimeoutRunTaskRunnable, 200);
                     break;
                 case Definition.CMD_AVM_ON:// 进入AVM
                     Logger.i(TAG, "CMD_AVM_ON ...");
@@ -84,6 +89,16 @@ public class ParkingService extends Service {
                 case Definition.CMD_DVR_ON:
                     Logger.i(TAG, "CMD_DVR_ON ...");
                     showParkingDialog();
+                    break;
+                case Definition.CMD_BACK_CAR_LINE_UPDATE:
+                    Logger.i(TAG, "CMD_BACK_CAR_LINE_UPDATE ...");
+                    BackCarTrackManager.getInstance().handlerBackCarTraceData(angle);
+                    break;
+                case Definition.CMD_AUTO_LEFT_TO_RIGHT:
+                    BackCarTrackManager.getInstance().testFromLeftToRight();
+                    break;
+                case Definition.CMD_AUTO_RIGHT_TO_LEFT:
+                    BackCarTrackManager.getInstance().testFromRightToLeft();
                     break;
             }
         }
@@ -150,5 +165,27 @@ public class ParkingService extends Service {
             }
         }
     };
+
+    private BackCarTrackManager.OnBackCarTrackListener mOnBackCarTrackListener = new BackCarTrackManager.OnBackCarTrackListener() {
+        @Override
+        public void onBackCarTrackChanged(int backCarTrackType, int index) {
+            Toast.makeText(ParkingService.this, "backCarTrackType=" + backCarTrackType + ", index=" + index, Toast.LENGTH_SHORT).show();
+            if (null == mParkingDialog) {
+                return;
+            }
+            switch (backCarTrackType) {
+                case BackCarTrackManager.TYPE_TRACE_LEFT:
+                    mParkingDialog.updateTranck("/storage/udisk0/udisk00/BackCarTraceResource/trace_left/" + (50 - index) + ".bmp");
+                    break;
+                case BackCarTrackManager.TYPE_TRACE_MIDDLE:
+                    mParkingDialog.updateTranck("/storage/udisk0/udisk00/BackCarTraceResource/trace_middle/" + index + ".bmp");
+                    break;
+                case BackCarTrackManager.TYPE_TRACE_RIGHT:
+                    mParkingDialog.updateTranck("/storage/udisk0/udisk00/BackCarTraceResource/trace_right/" + index + ".bmp");
+                    break;
+            }
+        }
+    };
+
 
 }

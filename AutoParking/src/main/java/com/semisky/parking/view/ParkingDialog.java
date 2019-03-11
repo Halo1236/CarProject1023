@@ -3,6 +3,7 @@ package com.semisky.parking.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.semisky.parking.R;
 import com.semisky.parking.utils.Logger;
@@ -24,6 +26,7 @@ public class ParkingDialog extends Dialog implements View.OnTouchListener {
     private Context mContext;
     private View mContentView;
     View rl_touch_view;
+    private ImageView iv_track;
 
     private final float X = 1;//1280.0f/960.0f;
     private final float Y = 1;//720.0f/566.0f;
@@ -101,6 +104,7 @@ public class ParkingDialog extends Dialog implements View.OnTouchListener {
     private void initViews() {
         this.rl_touch_view = findViewById(R.id.rl_touch_view);
         this.rl_touch_view.setOnTouchListener(this);
+        this.iv_track = (ImageView)findViewById(R.id.iv_track);
     }
 
     @Override
@@ -168,6 +172,12 @@ public class ParkingDialog extends Dialog implements View.OnTouchListener {
     public void dismiss() {
         super.dismiss();
         notifyShowStateChange(false);
+    }
+
+    public void updateTranck(String url){
+        if(null != url){
+            iv_track.setImageURI(Uri.parse(url));
+        }
     }
 
 

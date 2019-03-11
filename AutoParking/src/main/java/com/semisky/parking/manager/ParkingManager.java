@@ -22,6 +22,9 @@ public class ParkingManager {
         public static final int CMD_AVM_ON = 11;// 非R档进入AVM
         public static final int CMD_DVR_OFF = 20;// DVR关闭意图
         public static final int CMD_DVR_ON = 21;// DVR开启意图
+        public static final int CMD_BACK_CAR_LINE_UPDATE = 30;
+        public static final int CMD_AUTO_LEFT_TO_RIGHT = 31;
+        public static final int CMD_AUTO_RIGHT_TO_LEFT = 32;
 
     }
 
