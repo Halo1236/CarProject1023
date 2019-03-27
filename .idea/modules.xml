@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AutoRadio/AutoRadio.iml" filepath="$PROJECT_DIR$/AutoRadio/AutoRadio.iml" />
       <module fileurl="file://$PROJECT_DIR$/CarProject1023.iml" filepath="$PROJECT_DIR$/CarProject1023.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxjavademo/rxjavademo.iml" filepath="$PROJECT_DIR$/rxjavademo/rxjavademo.iml" />
     </modules>
   </component>
 </project>
