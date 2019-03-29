@@ -1,2 +1,2 @@
-// include ':AutoBT', ':SimpleMvp', ':simplemvplibrary', ':BM2718_AutoBT',':DialogDemo',':AutoRadio',':AutoParking'
-include   ':rxjavademo'
+// include ':AutoBT', ':SimpleMvp', ':simplemvplibrary', ':BM2718_AutoBT',':DialogDemo',':AutoRadio',':AutoParking'，':rxjavademo',':BTCarkit'
+include   ':TestService', ':SmkBT'
